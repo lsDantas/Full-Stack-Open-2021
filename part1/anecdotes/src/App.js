@@ -4,6 +4,12 @@ const getRandomInt = (max) => {
   return Math.floor(Math.random() * max);
 }
 
+const Header = ({ title }) => {
+  return (
+    <h1>{title}</h1>
+  );
+}
+
 const Button = ({name, handleClick}) => {
   return (
     <button onClick={handleClick}>{name}</button>
@@ -23,27 +29,39 @@ const App = () => {
   const num_anecdotes = anecdotes.length;
   const [selected, setSelected] = useState(0)
   const [points, setPoints] = useState(Array(num_anecdotes).fill(0))
+  const [favorite, setFavorite] = useState(0);
 
   // Randomly Select Anecdote
   const changeAnecdote = () => {
     setSelected(getRandomInt(num_anecdotes));
   }
 
-  // Count Votes
   const updatePoints = () => {
+    // Update General Vote Count
     let new_points = [...points];
     new_points[selected] += 1;
     setPoints(new_points);
+
+    // Determine if New Favorite
+    if (new_points[selected] > new_points[favorite]) {
+      setFavorite(selected);
+    }
   }
 
   return (
     <div>
+      <Header title="Anecdote of the Day" />
       {anecdotes[selected]}
       <br></br>
       Has {points[selected]} votes
       <br></br>
       <Button name="Vote" handleClick={updatePoints} />
       <Button name="Next Anecdote" handleClick={changeAnecdote} />
+
+      <Header title="Anecdote with Most Votes" />
+      {anecdotes[favorite]}
+      <br></br>
+      Has {points[favorite]} votes
     </div>
   );
 }
