@@ -14,43 +14,39 @@ const Button = ({ text, handleClick }) => {
   );
 }
 
-const Display = ({ name, count }) => {
-  return (
-    <>
-      {name} {count}
-    </>
-  );
-}
-
 const Statistics = (props) => {
   const [good, neutral, bad] = props.values;
-
-  // Check if any feedback given.
   const all = good + neutral + bad;
+  
   if( all === 0 ) {
+    // No Feedback Situation
     return ( <> No feedback given. </>);
   } 
   else {
-    // Display Statistics
+    // Statistics Board
     const average = (good - bad) / all;
     const positive = (good / all) * 100 + " %";
 
     return (
       <>
-        <Display name="good" count={good} />
-        <br></br>
-        <Display name="neutral" count={neutral} />
-        <br></br>
-        <Display name="bad" count={bad} />
-        <br></br>
-        <Display name="all" count={all} />
-        <br></br>
-        <Display name="average" count={average} />
-        <br></br>
-        <Display name="positive" count={positive} />
+        <StatisticLine name="good" value={good} />
+        <StatisticLine name="neutral" value={neutral} />
+        <StatisticLine name="bad" value={bad} />
+        <StatisticLine name="all" value={all} />
+        <StatisticLine name="average" value={average} />
+        <StatisticLine name="positive" value={positive} />
       </>
     );
   }
+}
+
+const StatisticLine = ({name, value}) => {
+  return (
+    <>
+      {name} {value}
+      <br></br>
+    </>
+  );
 }
 
 const App = () => {
