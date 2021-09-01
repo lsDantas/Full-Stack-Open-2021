@@ -4,6 +4,12 @@ const getRandomInt = (max) => {
   return Math.floor(Math.random() * max);
 }
 
+const Button = ({name, handleClick}) => {
+  return (
+    <button onClick={handleClick}>{name}</button>
+  );
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -15,18 +21,29 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is the same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.'
   ];
   const num_anecdotes = anecdotes.length;
-
   const [selected, setSelected] = useState(0)
+  const [points, setPoints] = useState(Array(num_anecdotes).fill(0))
 
+  // Randomly Select Anecdote
   const changeAnecdote = () => {
     setSelected(getRandomInt(num_anecdotes));
+  }
+
+  // Count Votes
+  const updatePoints = () => {
+    let new_points = [...points];
+    new_points[selected] += 1;
+    setPoints(new_points);
   }
 
   return (
     <div>
       {anecdotes[selected]}
       <br></br>
-      <button onClick={changeAnecdote}>Next Anecdote</button>
+      Has {points[selected]} votes
+      <br></br>
+      <Button name="Vote" handleClick={updatePoints} />
+      <Button name="Next Anecdote" handleClick={changeAnecdote} />
     </div>
   );
 }
