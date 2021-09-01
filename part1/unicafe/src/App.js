@@ -22,14 +22,35 @@ const Display = ({ name, count }) => {
   );
 }
 
+const Statistics = (props) => {
+  const [good, neutral, bad] = props.values;
+
+  const all = good + neutral + bad;
+  let average, positive;
+  if( all === 0 ) {
+    average = 0;
+    positive = 0;
+  } 
+  else {
+    average = (good - bad) / all;
+    positive = (good / all) * 100 + " %";
+  }
+
+  return (
+    <>
+      <Display name="all" count={ all } />
+      <br></br>
+      <Display name="average" count={ average } />
+      <br></br>
+      <Display name="positive" count={ positive } />
+    </>
+  );
+}
+
 const App = () => {
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
-
-  const all = good + neutral + bad;
-  const average = (good - bad) / all;
-  const positive = (good / all) * 100 + " %";
 
   return (
     <div>
@@ -45,11 +66,7 @@ const App = () => {
       <br></br>
       <Display name="bad" count={bad} />
       <br></br>
-      <Display name="all" count={ all } />
-      <br></br>
-      <Display name="average" count={ average } />
-      <br></br>
-      <Display name="positive" count={ positive } />
+      <Statistics values={[good, neutral, bad]} />
     </div>
   );
 }
