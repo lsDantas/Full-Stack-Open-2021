@@ -36,11 +36,14 @@ const Part = ({part}) => {
   );
 }
 
-const Total = (props) => {
+const Total = ({parts}) => {
+  const reducer = (sum, part) => sum + part.exercises;
+  const total = parts.reduce(reducer, 0);
+
   return (
     <>
       <p>
-        Number of Exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}
+        Number of Exercises {total}
       </p>
     </>
   );
@@ -65,6 +68,11 @@ function App() {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   };
