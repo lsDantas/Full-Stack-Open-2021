@@ -11,7 +11,7 @@ import NumberList from "./components/NumberList";
 const App = () => {
   // Load Contact List from Server
   const [persons, setPersons] = useState([]);
-  
+
   const personsHook = () => {
     personsService
       .getPersons()
@@ -64,6 +64,21 @@ const App = () => {
     event.target.reset()
   }
 
+  const removePerson = (id) => {
+    const handler = (event) => {
+      event.preventDefault();
+      
+      personsService
+        .deletePerson(id)
+        .then( () => {
+          const allButRemoved = persons.filter(person => person.id !== id);
+          setPersons(allButRemoved);
+        });
+    }
+    
+    return handler;
+  }
+
   return (
     <div>
       <h1>Phonebook</h1> 
@@ -73,7 +88,7 @@ const App = () => {
       <NewPhoneForm entry={newEntry} addHandler={addPerson} changeEntry={handleEntryChange} />
 
       <h2>Numbers</h2>
-      <NumberList persons={persons} filter={newFilter} />
+      <NumberList persons={persons} filter={newFilter} deleteHandler={removePerson} />
       <br></br>
       <div>Debug (Name): {newEntry.name}</div>
       <br></br>
