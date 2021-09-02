@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
-// Server Communication
-import axios from 'axios'
+// Services
+import personsService from './services/persons'
 
 // Components
 import FilterForm from './components/FilterForm'
@@ -11,14 +11,12 @@ import NumberList from "./components/NumberList";
 const App = () => {
   // Load Contact List from Server
   const [persons, setPersons] = useState([]);
-  const personsURI = 'http://localhost:3001/persons'
-  const loadPersons = response => setPersons(response.data);
+  
   const personsHook = () => {
-    axios
-      .get(personsURI)
-      .then(loadPersons);
+    personsService
+      .getPersons()
+      .then(newPersons => setPersons(newPersons));
   }
-
   useEffect(personsHook, []);
 
   // Filter for Searching
@@ -52,10 +50,9 @@ const App = () => {
     const matchesNewName = (person) => person.name === newEntry.name;
     if ( persons.some(matchesNewName) === false ) {
       // Send New Person to Server
-      const personsURL = "http://localhost:3001/persons";
-      axios
-        .post(personsURL, newEntry)
-        .then(response => setPersons(persons.concat(response.data)));
+      personsService
+        .createPerson(newEntry)
+        .then(newPerson => setPersons(persons.concat(newPerson)));
     }
     else {
       // Issue Alert Otherwise

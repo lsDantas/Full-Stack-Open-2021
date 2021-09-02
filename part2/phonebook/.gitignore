@@ -6,6 +6,7 @@
 .pnp.js
 
 # testing
+db.json
 /coverage
 
 # production
