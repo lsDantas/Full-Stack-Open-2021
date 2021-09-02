@@ -68,12 +68,16 @@ const App = () => {
     const handler = (event) => {
       event.preventDefault();
       
-      personsService
-        .deletePerson(id)
-        .then( () => {
-          const allButRemoved = persons.filter(person => person.id !== id);
-          setPersons(allButRemoved);
-        });
+      const idMatch = person => person.id === id;
+      if (window.confirm(`Delete ${persons.find(idMatch).name}?`)) {
+        personsService
+          .deletePerson(id)
+          .then(() => {
+            const allButRemoved = persons.filter(person => person.id !== id);
+            setPersons(allButRemoved);
+          });
+
+      }
     }
     
     return handler;
