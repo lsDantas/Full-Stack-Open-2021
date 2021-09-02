@@ -1,4 +1,4 @@
-const CountriesPanel = ({ countriesList, query }) => {
+const CountriesPanel = ({ countriesList, query, changeToggle}) => {
     // Check for Query Match
     const matchesQuery = (country) => { 
         // Case Insensitive Search
@@ -9,7 +9,7 @@ const CountriesPanel = ({ countriesList, query }) => {
     } 
     const select_countries = countriesList.filter(matchesQuery);
 
-    // Display According to Number of Matches
+    // Display Countries According to Number of Matches
     if (select_countries.length < 10) {
         if (select_countries.length === 1) {
             // Display Country Card
@@ -24,8 +24,8 @@ const CountriesPanel = ({ countriesList, query }) => {
             // List Countries
             return (
                 <>
-                    {select_countries.map(country =>
-                        <CountryName key={country.name} name={country.name} />
+                    {select_countries.map(select_country =>
+                        <CountryName key={select_country.name} country={select_country} changeToggle={changeToggle} />
                     )}
                 </>
             );
@@ -40,11 +40,29 @@ const CountriesPanel = ({ countriesList, query }) => {
     }
 }
 
-const CountryName = ({ name }) => {
+const CountryName = ({ country, changeToggle}) => {
+    // Decide Between Name or Country Card Display
+    const toggleOption = country.show ? "Hide" : "Show";
+    let country_info;
+    if(country.show) {
+        country_info = (
+            <>
+                <CountryCard key={country.name} country={country} />
+            </>
+        );
+    }
+    else {
+        country_info = (
+            <>
+            </>
+        );
+    }
+
     return (
         <>
-            {name}
+            {country.name} <button type="submit" onClick={changeToggle(country.name)}>{toggleOption} </button>
             <br></br>
+            {country_info}
         </>
     );
 }
