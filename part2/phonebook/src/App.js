@@ -6,14 +6,20 @@ const Header = ({ title }) => {
   );
 }
 
-const NewPhoneForm = ({value, addHandler, changeHandler}) => {
+const NewPhoneForm = ({entry, addHandler, changeEntry}) => {
   return (
     <form onSubmit={addHandler}>
       <div>
         name:
         <input
-          value={value}
-          onChange={changeHandler}
+          name={entry.name}
+          onChange={changeEntry("name")}
+        />
+        <br></br>
+        number:
+        <input 
+          number={entry.number}
+          onChange={changeEntry("number")}
         />
       </div>
       <div>
@@ -36,7 +42,7 @@ const NumberList = ({persons}) => {
 const Person = ({person}) => {
   return (
     <>
-      {person.name}
+      {person.name} {person.number}
       <br></br>
     </>
   );
@@ -44,42 +50,59 @@ const Person = ({person}) => {
 
 const App = () => {
   const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number : "994" }
   ]);
-  const [ newName, setNewname ] = useState('');
 
-  // Add New People to Phonebook
-  const handleNameChange = (event) => {
-    setNewname(event.target.value);
+  // Phonebook New Entry State
+  const [ newEntry, setNewEntry ] = useState({
+    name: '',
+    number: ''
+  });
+
+  // Add New Entry to Phonebook
+  const handleEntryChange = (field) => {
+    const handler = (event) => {
+      const updatedEntry = {
+        ...newEntry,
+        [field] : event.target.value
+      };
+      setNewEntry(updatedEntry);
+    }
+    return handler;
   }
 
   const addPerson = (event) => {
     event.preventDefault();
-    const personObject = {
-      name : newName
-    };
 
     // Add Person if New
-    const matchesNewName = (person) => person.name === newName;
+    const matchesNewName = (person) => person.name === newEntry.name;
     if ( persons.some(matchesNewName) === false ) {
-      setPersons(persons.concat(personObject));
+      setPersons(persons.concat(newEntry));
     }
     else {
       // Issue Alert Otherwise
-      window.alert(`${newName} is already added to the phonebook`);
+      window.alert(`${newEntry.name} is already added to the phonebook`);
     }
 
+    // Clear Entry
+    /*
+    const blankEntry = {
+      name: '',
+      number: ''
+    };
+    setNewEntry(blankEntry);
+    */
   }
 
   return (
     <div>
       <Header title="Phonebook" />
-      <NewPhoneForm value={newName} addHandler={addPerson} changeHandler={handleNameChange} />
+      <NewPhoneForm entry={newEntry} addHandler={addPerson} changeEntry={handleEntryChange} />
 
       <Header title="Numbers" />
       <NumberList persons={persons} />
       <br></br>
-      <div>debug: {newName}</div>
+      <div>debug: {newEntry.name}</div>
     </div>
   );
 }
