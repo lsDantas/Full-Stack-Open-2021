@@ -51,7 +51,11 @@ const App = () => {
     // Add Person if New
     const matchesNewName = (person) => person.name === newEntry.name;
     if ( persons.some(matchesNewName) === false ) {
-      setPersons(persons.concat(newEntry));
+      // Send New Person to Server
+      const personsURL = "http://localhost:3001/persons";
+      axios
+        .post(personsURL, newEntry)
+        .then(response => setPersons(persons.concat(response.data)));
     }
     else {
       // Issue Alert Otherwise
