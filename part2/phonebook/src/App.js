@@ -6,33 +6,52 @@ const Header = ({ title }) => {
   );
 }
 
-const NewPhoneForm = ({entry, addHandler, changeEntry}) => {
+const FilterForm = ({filter, changeFilter}) => {
   return (
-    <form onSubmit={addHandler}>
-      <div>
-        name:
-        <input
-          name={entry.name}
-          onChange={changeEntry("name")}
-        />
-        <br></br>
-        number:
-        <input 
-          number={entry.number}
-          onChange={changeEntry("number")}
-        />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
+    <div>
+      Filter shown with a
+      <input
+        name={filter}
+        onChange={changeFilter}
+      />
+    </div>
   );
 }
 
-const NumberList = ({persons}) => {
+const NewPhoneForm = ({entry, addHandler, changeEntry}) => {
   return (
     <>
-      {persons.map(person =>
+      <Header title="Add a New Entry" />
+      <form onSubmit={addHandler}>
+        <div>
+          Name:
+          <input
+            name={entry.name}
+            onChange={changeEntry("name")}
+          />
+          <br></br>
+          Number:
+          <input 
+            number={entry.number}
+            onChange={changeEntry("number")}
+          />
+        </div>
+        <div>
+          <button type="submit">add</button>
+        </div>
+      </form>
+    </>
+  );
+}
+
+const NumberList = ({persons, filter}) => {
+  const matchesSearchTerm = (person) => person.name.includes(filter);
+  const selected_people = persons.filter(matchesSearchTerm)
+
+  return (
+    <>
+      <Header title="Numbers" />
+      {selected_people.map(person =>
           <Person key={person.name} person={person} />
       )}
     </>
@@ -49,17 +68,26 @@ const Person = ({person}) => {
 }
 
 const App = () => {
-  const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas', number : "994" }
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]);
 
-  // Phonebook New Entry State
+  // Search Filter
+  const [newFilter, setNewFilter ]= useState('');
+
+  const handleFilterChange = (event) => {
+    setNewFilter(event.target.value);
+  }
+
+  // New Entry
   const [ newEntry, setNewEntry ] = useState({
     name: '',
     number: ''
   });
 
-  // Add New Entry to Phonebook
   const handleEntryChange = (field) => {
     const handler = (event) => {
       const updatedEntry = {
@@ -85,24 +113,24 @@ const App = () => {
     }
 
     // Clear Entry
-    /*
     const blankEntry = {
       name: '',
       number: ''
     };
     setNewEntry(blankEntry);
-    */
+    event.target.reset()
   }
 
   return (
     <div>
       <Header title="Phonebook" />
+      <FilterForm filter={newFilter} changeFilter={handleFilterChange} />
       <NewPhoneForm entry={newEntry} addHandler={addPerson} changeEntry={handleEntryChange} />
-
-      <Header title="Numbers" />
-      <NumberList persons={persons} />
+      <NumberList persons={persons} filter={newFilter} />
       <br></br>
-      <div>debug: {newEntry.name}</div>
+      <div>Debug (Name): {newEntry.name}</div>
+      <br></br>
+      <div>Debug (Filter): {newFilter}</div>
     </div>
   );
 }
