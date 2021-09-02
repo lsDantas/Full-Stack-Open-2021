@@ -12,11 +12,11 @@ const App = () => {
   // Load Contact List from Server
   const [persons, setPersons] = useState([]);
   const personsURI = 'http://localhost:3001/persons'
-  const loadNotes = response => setPersons(response.data);
+  const loadPersons = response => setPersons(response.data);
   const personsHook = () => {
     axios
       .get(personsURI)
-      .then(loadNotes);
+      .then(loadPersons);
   }
 
   useEffect(personsHook, []);
