@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+// Server Communication
+import axios from 'axios'
+
+// Components
 import FilterForm from './components/FilterForm'
 import NewPhoneForm from "./components/NewPhoneForm";
 import NumberList from "./components/NumberList";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]);
+  // Load Contact List from Server
+  const [persons, setPersons] = useState([]);
+  const personsURI = 'http://localhost:3001/persons'
+  const loadNotes = response => setPersons(response.data);
+  const personsHook = () => {
+    axios
+      .get(personsURI)
+      .then(loadNotes);
+  }
+
+  useEffect(personsHook, []);
 
   // Filter for Searching
   const [newFilter, setNewFilter ]= useState('');
