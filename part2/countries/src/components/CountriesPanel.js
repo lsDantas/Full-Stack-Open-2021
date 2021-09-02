@@ -1,4 +1,10 @@
-const CountriesPanel = ({ countriesList, query, changeToggle}) => {
+import React, { useEffect, useState } from "react";
+
+// Server Communication
+import axios from 'axios'
+
+
+const CountriesPanel = ({ countriesList, query, changeToggle, weather, checkWeather }) => {
     // Check for Query Match
     const matchesQuery = (country) => { 
         // Case Insensitive Search
@@ -17,6 +23,7 @@ const CountriesPanel = ({ countriesList, query, changeToggle}) => {
             return ( 
                 <>
                     <CountryCard key={profiledCountry.name}country={profiledCountry} />
+                    <WeatherPanel key={profiledCountry.capital} city={profiledCountry.capital} weather={weather} checkWeather={checkWeather}/>
                 </>
             );
         }
@@ -90,6 +97,19 @@ const LanguageName = ({languageName}) => {
     return (
         <li>{languageName}</li>
     );
+}
+
+const WeatherPanel = ({ city, weatherData, weather, checkWeather}) => {
+    useEffect(checkWeather(city), []);
+
+    return (
+        <div>
+            <h2>Weather in {city}</h2>
+            <b>Temperature: </b> {weather.temperature} Celsius
+            <br></br>
+            <b>Wind</b> {weather.wind_speed} mph Direction {weather.wind_direction}
+        </div>
+    )
 }
 
 export default CountriesPanel;

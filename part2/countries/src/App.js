@@ -65,12 +65,47 @@ const App = () => {
 
     return handler;
   }
+
+  // Weather Data
+
+  const [weatherData, setWeatherData] = useState({
+    temperature: '',
+    wind_speed: '',
+    wind_direction: ''
+  });
+
+  // Fetch Update Weather Data
+  const weatherSelect = (city) => {
+    const api_key = process.env.REACT_APP_API_KEY;
+    const weatherURI = `http://api.weatherstack.com/current?access_key=${api_key}&query=${city}`;
+
+    const weatherHook = () => {
+      const loadWeather = response => {
+        console.log(response.data);
+        console.log(api_key);
+        const currentWeather = response.data.current;
+        const newWeatherData = {
+          temperature: currentWeather.temperature,
+          wind_speed: currentWeather.wind_speed,
+          wind_direction: currentWeather.wind_dir
+        };
+        setWeatherData(newWeatherData);
+      }
+
+      axios
+        .get(weatherURI)
+        .then(loadWeather);
+    };
+
+    return weatherHook;
+  }
+  
   
   return (
     <div>
       <SearchForm query={newQuery} changeQuery={handleQueryChange} />
       <br></br>
-      <CountriesPanel query={newQuery} countriesList={countries} changeToggle={handleToggle} />
+      <CountriesPanel query={newQuery} countriesList={countries} changeToggle={handleToggle} weather={weatherData} checkWeather={weatherSelect} />
     </div>
   );
 }
