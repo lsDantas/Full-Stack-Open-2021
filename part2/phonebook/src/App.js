@@ -63,7 +63,7 @@ const App = () => {
       // Add Contact if New Person
       personsService
         .createPerson(newContact)
-        .then(newPerson => setContacts(contacts.concat(newPerson)))
+        .then(updatedPersons => setContacts(updatedPersons))
         .then(displaySuccessNotification(newContact.name));
     }
     else {
@@ -136,10 +136,6 @@ const App = () => {
 
       <h2>Numbers</h2>
       <ContactList contacts={contacts} filterQuery={newFilter} deleteHandler={removeContact} />
-      <br></br>
-      <div>Debug (Name): {newContact.name}</div>
-      <br></br>
-      <div>Debug (Filter): {newFilter}</div>
     </div>
   );
 }
