@@ -55,8 +55,27 @@ const App = () => {
         .then(newPerson => setPersons(persons.concat(newPerson)));
     }
     else {
-      // Issue Alert Otherwise
-      window.alert(`${newEntry.name} is already added to the phonebook`);
+      // Ask for Permission to Overwrite Old Number
+      if ( window.confirm(`${newEntry.name} is already added to the phonebook, replace the old number with a new one?`) ) {
+        // Build Updated Person Entry
+        const id = persons.find(matchesNewName).id;
+        const newPersonWithID = { ...newEntry, id : id };
+        
+        personsService
+          .updatePerson(newPersonWithID)
+          .then( (newPerson) => {
+            console.log(newPerson)
+            const updatedPersons = persons.map( person => {
+              if (person.id === newPerson.id ) {
+                return newPersonWithID;
+              }
+              else {
+                return person;
+              }
+            });
+            setPersons(updatedPersons);
+          });
+      }
     }
 
     // Clear Entry
@@ -67,13 +86,14 @@ const App = () => {
   const removePerson = (id) => {
     const handler = (event) => {
       event.preventDefault();
-      
-      const idMatch = person => person.id === id;
-      if (window.confirm(`Delete ${persons.find(idMatch).name}?`)) {
+
+      const selectedPersonName = persons.find( person => person.id === id).name;
+      if (window.confirm(`Delete ${selectedPersonName}?`)) {
         personsService
           .deletePerson(id)
           .then(() => {
-            const allButRemoved = persons.filter(person => person.id !== id);
+            const idMismatch = person => person.id !== id;
+            const allButRemoved = persons.filter(idMismatch);
             setPersons(allButRemoved);
           });
 
