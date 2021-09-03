@@ -118,7 +118,8 @@ const App = () => {
           const allButRemoved = persons.filter(idMismatch);
           setPersons(allButRemoved);
         }
-
+        
+        // Remove Person
         personsService
           .deletePerson(id)
           .then(() => {
