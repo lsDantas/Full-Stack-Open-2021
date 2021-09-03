@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import './index.css'
+
 // Services
 import personsService from './services/persons'
 
@@ -7,8 +9,10 @@ import personsService from './services/persons'
 import FilterForm from './components/FilterForm'
 import NewPhoneForm from "./components/NewPhoneForm";
 import NumberList from "./components/NumberList";
+import SuccessNotification from "./components/SuccessNotification";
 
 const App = () => {
+
   // Load Contact List from Server
   const [persons, setPersons] = useState([]);
 
@@ -18,6 +22,9 @@ const App = () => {
       .then(newPersons => setPersons(newPersons));
   }
   useEffect(personsHook, []);
+
+  // Notifications
+  const [successMessage, setSuccessMessage] = useState(null)
 
   // Filter for Searching
   const [newFilter, setNewFilter ]= useState('');
@@ -49,10 +56,19 @@ const App = () => {
     // Add Person if New
     const matchesNewName = (person) => person.name === newEntry.name;
     if ( persons.some(matchesNewName) === false ) {
+      // Prepare Sucess Notification
+      const displayNotification = () => {
+        setSuccessMessage(`Added ${newEntry.name}`);
+        setTimeout(() => {
+          setSuccessMessage(null)
+        }, 5000);
+      }
+
       // Send New Person to Server
       personsService
         .createPerson(newEntry)
-        .then(newPerson => setPersons(persons.concat(newPerson)));
+        .then(newPerson => setPersons(persons.concat(newPerson)))
+        .then(displayNotification);
     }
     else {
       // Ask for Permission to Overwrite Old Number
@@ -106,6 +122,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1> 
+      <SuccessNotification message={successMessage} />
       <FilterForm filter={newFilter} changeFilter={handleFilterChange} />
 
       <h2>Add New Entry</h2>
