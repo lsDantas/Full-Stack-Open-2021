@@ -10,6 +10,7 @@ import FilterForm from './components/FilterForm'
 import NewPhoneForm from "./components/NewPhoneForm";
 import NumberList from "./components/NumberList";
 import SuccessNotification from "./components/SuccessNotification";
+import ErrorNotification from "./ErrorNotification";
 
 const App = () => {
 
@@ -24,7 +25,8 @@ const App = () => {
   useEffect(personsHook, []);
 
   // Notifications
-  const [successMessage, setSuccessMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   // Filter for Searching
   const [newFilter, setNewFilter ]= useState('');
@@ -57,7 +59,7 @@ const App = () => {
     const matchesNewName = (person) => person.name === newEntry.name;
     if ( persons.some(matchesNewName) === false ) {
       // Prepare Sucess Notification
-      const displayNotification = () => {
+      const displaySuccessNotification = () => {
         setSuccessMessage(`Added ${newEntry.name}`);
         setTimeout(() => {
           setSuccessMessage(null)
@@ -68,7 +70,7 @@ const App = () => {
       personsService
         .createPerson(newEntry)
         .then(newPerson => setPersons(persons.concat(newPerson)))
-        .then(displayNotification);
+        .then(displaySuccessNotification);
     }
     else {
       // Ask for Permission to Overwrite Old Number
@@ -105,13 +107,26 @@ const App = () => {
 
       const selectedPersonName = persons.find( person => person.id === id).name;
       if (window.confirm(`Delete ${selectedPersonName}?`)) {
+        // Prepare Error Notification
+        const displayErrorNotification = () => {
+          setErrorMessage(`Information of ${selectedPersonName} has already been removed from server`);
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000);
+
+          const idMismatch = person => person.id !== id;
+          const allButRemoved = persons.filter(idMismatch);
+          setPersons(allButRemoved);
+        }
+
         personsService
           .deletePerson(id)
           .then(() => {
             const idMismatch = person => person.id !== id;
             const allButRemoved = persons.filter(idMismatch);
             setPersons(allButRemoved);
-          });
+          })
+          .catch(displayErrorNotification);
 
       }
     }
@@ -122,6 +137,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1> 
+      <ErrorNotification message={errorMessage} />
       <SuccessNotification message={successMessage} />
       <FilterForm filter={newFilter} changeFilter={handleFilterChange} />
 
