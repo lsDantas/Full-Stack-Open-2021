@@ -2,153 +2,142 @@ import React, { useEffect, useState } from "react";
 
 import './index.css'
 
-// Services
 import personsService from './services/persons'
 
-// Components
-import FilterForm from './components/FilterForm'
-import NewPhoneForm from "./components/NewPhoneForm";
-import NumberList from "./components/NumberList";
-import SuccessNotification from "./components/SuccessNotification";
-import ErrorNotification from "./ErrorNotification";
+import SearchFilterForm from './components/SearchFilterForm';
+import NewContactForm from "./components/NewContactForm";
+import ContactList from "./components/ContactList";
+import Notification from "./components/Notification";
 
 const App = () => {
 
-  // Load Contact List from Server
-  const [persons, setPersons] = useState([]);
-
-  const personsHook = () => {
-    personsService
-      .getPersons()
-      .then(newPersons => setPersons(newPersons));
-  }
-  useEffect(personsHook, []);
-
-  // Notifications
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  // Filter for Searching
-  const [newFilter, setNewFilter ]= useState('');
+  // Contact Search Filter - Handle Input
+  const [newFilter, setNewFilter] = useState('');
 
   const handleFilterChange = (event) => {
     setNewFilter(event.target.value);
   }
 
-  // New Entry
-  const [ newEntry, setNewEntry ] = useState({
+  // Notifications
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const notificationDuration = 5000;
+
+  const displaySuccessNotification = (name) => {
+    setSuccessMessage(`Added ${name}`);
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, notificationDuration);
+  }
+
+  const displayErrorNotification = (name) => {
+    setErrorMessage(`Information of ${name} has already been removed from server`);
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, notificationDuration);
+  }
+
+  // New Contact Form - Handle Input
+  const [ newContact, setNewContact ] = useState({
     name: '',
     number: ''
   });
 
-  const handleEntryChange = (field) => {
-    const handler = (event) => {
-      const updatedEntry = {
-        ...newEntry,
+  const handleContactInput = (field) => {
+    const contactInputHandler = (event) => {
+      const updatedContactEntry = {
+        ...newContact,
         [field] : event.target.value
       };
-      setNewEntry(updatedEntry);
+      setNewContact(updatedContactEntry);
     }
-    return handler;
+    return contactInputHandler;
   }
 
-  const addPerson = (event) => {
+  // Create New Contact
+  const addContact = (event) => {
     event.preventDefault();
 
-    // Add Person if New
-    const matchesNewName = (person) => person.name === newEntry.name;
-    if ( persons.some(matchesNewName) === false ) {
-      // Prepare Sucess Notification
-      const displaySuccessNotification = () => {
-        setSuccessMessage(`Added ${newEntry.name}`);
-        setTimeout(() => {
-          setSuccessMessage(null)
-        }, 5000);
-      }
-
-      // Send New Person to Server
+    const matchesNewName = (person) => person.name === newContact.name;
+    if ( contacts.some(matchesNewName) === false ) {
+      // Add Contact if New Person
       personsService
-        .createPerson(newEntry)
-        .then(newPerson => setPersons(persons.concat(newPerson)))
-        .then(displaySuccessNotification);
+        .createPerson(newContact)
+        .then(newPerson => setContacts(contacts.concat(newPerson)))
+        .then(displaySuccessNotification(newContact.name));
     }
     else {
-      // Ask for Permission to Overwrite Old Number
-      if ( window.confirm(`${newEntry.name} is already added to the phonebook, replace the old number with a new one?`) ) {
-        // Build Updated Person Entry
-        const id = persons.find(matchesNewName).id;
-        const newPersonWithID = { ...newEntry, id : id };
+      // Request Permission to Overwrite Number if Old Contact
+      const permissionMessage = `${newContact.name} is already added to the phonebook, replace the old number with a new one?`;
+      if ( window.confirm(permissionMessage) ) {
+        const id = contacts.find(matchesNewName).id;
+        const updatedContact = { ...newContact, id : id };
         
         personsService
-          .updatePerson(newPersonWithID)
+          .updatePerson(updatedContact)
           .then( (newPerson) => {
-            console.log(newPerson)
-            const updatedPersons = persons.map( person => {
-              if (person.id === newPerson.id ) {
-                return newPersonWithID;
-              }
-              else {
-                return person;
-              }
-            });
-            setPersons(updatedPersons);
+            const updatedPersons = contacts.map( person => 
+              (person.id === newPerson.id) ? updatedContact : person
+            );
+            setContacts(updatedPersons);
           });
       }
     }
 
-    // Clear Entry
-    setNewEntry({ name : '', number : '' });
+    // Clear New Contact Form
+    setNewContact({ name : '', number : '' });
     event.target.reset()
   }
 
-  const removePerson = (id) => {
-    const handler = (event) => {
+  const removeContact = (id) => {
+    const contactRemovalHandler = (event) => {
       event.preventDefault();
 
-      const selectedPersonName = persons.find( person => person.id === id).name;
-      if (window.confirm(`Delete ${selectedPersonName}?`)) {
-        // Prepare Error Notification
-        const displayErrorNotification = () => {
-          setErrorMessage(`Information of ${selectedPersonName} has already been removed from server`);
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 5000);
-
-          const idMismatch = person => person.id !== id;
-          const allButRemoved = persons.filter(idMismatch);
-          setPersons(allButRemoved);
-        }
-        
-        // Remove Person
+      const selectedPersonName = contacts.find( person => person.id === id).name;
+      const permissionMessage = `Delete ${selectedPersonName}?`;
+      if (window.confirm(permissionMessage)) {
         personsService
           .deletePerson(id)
-          .then(() => {
-            const idMismatch = person => person.id !== id;
-            const allButRemoved = persons.filter(idMismatch);
-            setPersons(allButRemoved);
+          .catch( () => {
+            // Contact Already Removed in Server
+            displayErrorNotification(selectedPersonName)
           })
-          .catch(displayErrorNotification);
+          .finally( () => {
+            // Remove Contact from Interface
+            const allButRemoved = contacts.filter(person => person.id !== id);
+            setContacts(allButRemoved);
+          });
 
       }
     }
     
-    return handler;
+    return contactRemovalHandler;
   }
+
+  // Contact List - Load from Server
+  const [contacts, setContacts] = useState([]);
+
+  const personsHook = () => {
+    personsService
+      .getPersons()
+      .then(newPersons => setContacts(newPersons));
+  }
+  useEffect(personsHook, []);
 
   return (
     <div>
       <h1>Phonebook</h1> 
-      <ErrorNotification message={errorMessage} />
-      <SuccessNotification message={successMessage} />
-      <FilterForm filter={newFilter} changeFilter={handleFilterChange} />
+      <Notification message={errorMessage} notificationStyle="failureNotification"/>
+      <Notification message={successMessage} notificationStyle="successNotification"/>
+      <SearchFilterForm filterQuery={newFilter} changeFilterQuery={handleFilterChange} />
 
       <h2>Add New Entry</h2>
-      <NewPhoneForm entry={newEntry} addHandler={addPerson} changeEntry={handleEntryChange} />
+      <NewContactForm entry={newContact} addContactHandler={addContact} changeEntryHandler={handleContactInput} />
 
       <h2>Numbers</h2>
-      <NumberList persons={persons} filter={newFilter} deleteHandler={removePerson} />
+      <ContactList contacts={contacts} filterQuery={newFilter} deleteHandler={removeContact} />
       <br></br>
-      <div>Debug (Name): {newEntry.name}</div>
+      <div>Debug (Name): {newContact.name}</div>
       <br></br>
       <div>Debug (Filter): {newFilter}</div>
     </div>

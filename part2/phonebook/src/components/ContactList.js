@@ -1,6 +1,6 @@
-const NumberList = ({ persons, filter, deleteHandler }) => {
-    const matchesSearchTerm = (person) => person.name.includes(filter);
-    const selected_people = persons.filter(matchesSearchTerm)
+const ContactList = ({ contacts, filterQuery, deleteHandler }) => {
+    const matchesSearchTerm = (person) => person.name.includes(filterQuery);
+    const selected_people = contacts.filter(matchesSearchTerm);
 
     return (
         <>
@@ -23,4 +23,4 @@ const Person = ({ person, deleteHandler }) => {
     );
 }
 
-export default NumberList;
+export default ContactList;

@@ -1,18 +1,18 @@
-const NewPhoneForm = ({ entry, addHandler, changeEntry }) => {
+const NewContactForm = ({ entry, addContactHandler, changeEntryHandler }) => {
     return (
         <>
-            <form onSubmit={addHandler}>
+            <form onSubmit={addContactHandler}>
                 <div>
                     Name:
                     <input
                         name={entry.name}
-                        onChange={changeEntry("name")}
+                        onChange={changeEntryHandler("name")}
                     />
                     <br></br>
                     Number:
                     <input
                         number={entry.number}
-                        onChange={changeEntry("number")}
+                        onChange={changeEntryHandler("number")}
                     />
                 </div>
                 <div>
@@ -23,4 +23,4 @@ const NewPhoneForm = ({ entry, addHandler, changeEntry }) => {
     );
 }
 
-export default NewPhoneForm;
+export default NewContactForm;

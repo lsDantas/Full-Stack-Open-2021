@@ -22,7 +22,7 @@ code {
   margin-bottom: 10px;
 }
 
-.errorNotification {
+.failureNotification {
   color: red;
   background: lightgrey;
   font-size: 20px;
