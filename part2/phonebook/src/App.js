@@ -23,15 +23,15 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const notificationDuration = 5000;
 
-  const displaySuccessNotification = (name) => {
-    setSuccessMessage(`Added ${name}`);
+  const displaySuccessNotification = (message) => {
+    setSuccessMessage(message);
     setTimeout(() => {
       setSuccessMessage(null)
     }, notificationDuration);
   }
 
-  const displayErrorNotification = (name) => {
-    setErrorMessage(`Information of ${name} has already been removed from server`);
+  const displayErrorNotification = (message) => {
+    setErrorMessage(message);
     setTimeout(() => {
       setErrorMessage(null)
     }, notificationDuration);
@@ -63,8 +63,13 @@ const App = () => {
       // Add Contact if New Person
       personsService
         .createPerson(newContact)
-        .then(updatedPerson => setContacts(contacts.concat(updatedPerson)))
-        .then(displaySuccessNotification(newContact.name));
+        .then(updatedPerson => {
+          setContacts(contacts.concat(updatedPerson));
+          displaySuccessNotification(`Added ${newContact.name}`);
+        })
+        .catch(error => {
+          displayErrorNotification(error.response.data.error);
+        });
     }
     else {
       // Request Permission to Overwrite Number if Old Contact
@@ -100,7 +105,7 @@ const App = () => {
           .deletePerson(id)
           .catch( () => {
             // Contact Already Removed in Server
-            displayErrorNotification(selectedPersonName)
+            displayErrorNotification(`Information of ${selectedPersonName} has already been removed from server`);
           })
           .finally( () => {
             // Remove Contact from Interface
