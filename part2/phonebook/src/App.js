@@ -63,7 +63,7 @@ const App = () => {
       // Add Contact if New Person
       personsService
         .createPerson(newContact)
-        .then(updatedPersons => setContacts(updatedPersons))
+        .then(updatedPerson => setContacts(contacts.concat(updatedPerson)))
         .then(displaySuccessNotification(newContact.name));
     }
     else {
