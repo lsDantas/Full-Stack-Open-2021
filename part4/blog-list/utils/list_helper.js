@@ -18,12 +18,39 @@ const favoriteBlog = (blogs) => {
 
         return blogs.reduce(reducer);
     }
-    console.log("Here");
     return undefined;
+};
+
+const mostBlogs = (blogs) => {
+    // Determine Author Frequencies
+    const authorsFreqReducer = (authors, entry) => {
+        const updatedCount = (authors[entry.author] === undefined)
+            ? 1
+            : Number(authors[entry.author]) + 1;
+
+        return { ...authors, [entry.author]: updatedCount };
+    };
+    const authorsFreqDict = blogs.reduce(authorsFreqReducer, {});
+    const authorsFreq = Object.entries(authorsFreqDict);
+
+    // Determine Top Author
+    const mostsBlogsReducer = ((topBlogger, [name, freq]) => {
+        const newTop = (freq > topBlogger.blogs)
+            ? { author: name, blogs: Number(freq) }
+            : topBlogger;
+
+        return newTop;
+    });
+
+    const noAuthor = { author: undefined, blogs: 0 };
+    const topBlogger = authorsFreq.reduce(mostsBlogsReducer, noAuthor);
+
+    return topBlogger;
 };
 
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
+    mostBlogs,
 };
