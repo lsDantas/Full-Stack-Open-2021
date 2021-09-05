@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "test": "echo \\\\\\\"Error: no test specified\\\\\\\" && exit 1",
+    "test": "jest --verbose",
     "lint": "eslint ."
   },
   "author": "Leonardo Dantas",
@@ -22,6 +22,7 @@
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.24.2",
+    "jest": "^27.1.0",
     "nodemon": "^2.0.12"
   }
 }
