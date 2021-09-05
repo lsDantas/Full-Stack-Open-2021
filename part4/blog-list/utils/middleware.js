@@ -23,6 +23,7 @@ const errorHandler = (error, request, response, next) => {
         case 'ValidationError':
             return response.status(400).json({ error: error.message });
         default:
+            // No Clue
             return next(error);
     }
 };
