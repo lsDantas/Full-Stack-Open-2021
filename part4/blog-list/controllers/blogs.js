@@ -5,7 +5,8 @@ blogsRouter.get('/', (request, response) => {
     Blog
         .find({})
         .then((blogs) => {
-            response.json(blogs);
+            const entries = blogs.map((blog) => blog.toJSON());
+            response.json(entries);
         });
 });
 
@@ -15,7 +16,7 @@ blogsRouter.post('/', (request, response) => {
     blog
         .save()
         .then((result) => {
-            response.status(201).json(result);
+            response.status(201).json(result.toJSON());
         });
 });
 
