@@ -48,9 +48,37 @@ const mostBlogs = (blogs) => {
     return topBlogger;
 };
 
+const mostLikes = (blogs) => {
+    // Count Authors' Likes
+    const authorsLikesReducer = (authors, entry) => {
+        const updatedLikes = (authors[entry.author] === undefined)
+            ? entry.likes
+            : Number(authors[entry.author]) + entry.likes;
+
+        return { ...authors, [entry.author]: updatedLikes };
+    };
+    const authorsLikesDict = blogs.reduce(authorsLikesReducer, {});
+    const authorsLikes = Object.entries(authorsLikesDict);
+
+    // Determine Author with Most Likes
+    const mostsLikesReducer = ((topBlogger, [name, likes]) => {
+        const newTop = (likes > topBlogger.likes)
+            ? { author: name, likes: Number(likes) }
+            : topBlogger;
+
+        return newTop;
+    });
+
+    const noAuthor = { author: undefined, likes: 0 };
+    const topBlogger = authorsLikes.reduce(mostsLikesReducer, noAuthor);
+
+    return topBlogger;
+};
+
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
     mostBlogs,
+    mostLikes,
 };
