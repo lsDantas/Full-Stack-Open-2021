@@ -25,43 +25,64 @@ beforeEach(async () => {
 }, jestTimeout);
 
 // Tests
-test('Returns correct amount of blog posts in JSON format.', async () => {
-    const response = await api
-        .get('/api/blogs')
-        .expect(200)
-        .expect('Content-Type', /application\/json/);
+describe('Blog Entries', () => {
+    test('Returns correct amount of blog posts in JSON format.', async () => {
+        const response = await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-Type', /application\/json/);
 
-    expect(response.body).toHaveLength(helper.initialBlogs.length);
-}, jestTimeout);
+        expect(response.body).toHaveLength(helper.initialBlogs.length);
+    }, jestTimeout);
 
-test('Blog entries are identified by "id" rather than "_id".', async () => {
-    const response = await api
-        .get('/api/blogs');
+    test('Blog entries are identified by "id" rather than "_id".', async () => {
+        const response = await api
+            .get('/api/blogs');
 
-    const blogs = response.body;
-    const blogIds = (blog) => blog.id;
-    expect(blogs.map(blogIds)).toBeDefined();
-});
+        const blogs = response.body;
+        const blogIds = (blog) => blog.id;
+        expect(blogs.map(blogIds)).toBeDefined();
+    });
 
-test('Blog entries are correctly added.', async () => {
-    // Add New Entry
-    const blog = new Blog(
-        {
-            title: 'Sample Entry',
-            author: 'No One',
-            url: 'http://www.example.com',
-        },
-    );
-    await blog.save();
+    test('Blog entries are correctly added.', async () => {
+        // Add New Entry
+        const blog = new Blog(
+            {
+                title: 'Sample Entry',
+                author: 'No One',
+                url: 'http://www.example.com',
+            },
+        );
+        await blog.save();
 
-    const blogsAtEnd = await helper.blogsInDb();
+        const blogsAtEnd = await helper.blogsInDb();
 
-    // Check for Appropriate Length
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
+        // Check for Appropriate Length
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1);
 
-    // Check for Matching Title
-    const titles = blogsAtEnd.map((entry) => entry.title);
-    expect(titles).toContain(blog.title);
+        // Check for Matching Title
+        const titles = blogsAtEnd.map((entry) => entry.title);
+        expect(titles).toContain(blog.title);
+    });
+
+    test('Entries without a "likes" property have 0 likes.', async () => {
+        // Add New Entry
+        const newEntry = new Blog(
+            {
+                title: 'Sample Entry',
+                author: 'No One',
+                url: 'http://www.example.com',
+            },
+        );
+        await newEntry.save();
+
+        // Fetch Blogs and Identify New Entry
+        const response = await api
+            .get('/api/blogs');
+        const matchingBlog = response.body.filter((blog) => blog.title === newEntry.title).pop();
+
+        expect(matchingBlog.likes).toBe(0);
+    });
 });
 
 // Post-Test Actions
