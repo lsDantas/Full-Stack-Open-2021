@@ -23,4 +23,14 @@ blogsRouter.post('/', (request, response) => {
         });
 });
 
+blogsRouter.delete('/', (request, response) => {
+    const removedBlog = new Blog(request.body);
+
+    Blog
+        .deleteOne(removedBlog)
+        .then(() => {
+            response.status(204).end();
+        });
+});
+
 module.exports = blogsRouter;
