@@ -1,14 +1,6 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
-
-blogsRouter.get('/', (request, response) => {
-    Blog
-        .find({})
-        .then((blogs) => {
-            const entries = blogs.map((blog) => blog.toJSON());
-            response.json(entries);
-        });
-});
+const { nonExistingId } = require('../tests/blog_test_helper');
 
 blogsRouter.post('/', (request, response) => {
     const blog = new Blog(request.body);
@@ -21,6 +13,27 @@ blogsRouter.post('/', (request, response) => {
         .catch(() => {
             response.status(400).json({ error: 'Fields missing.' });
         });
+});
+
+blogsRouter.get('/', (request, response) => {
+    Blog
+        .find({})
+        .then((blogs) => {
+            const entries = blogs.map((blog) => blog.toJSON());
+            response.json(entries);
+        });
+});
+
+blogsRouter.put('/:id', async (request, response, next) => {
+    const updatedEntry = request.body;
+
+    try {
+        const resultingEntry = await Blog
+            .findByIdAndUpdate(request.params.id, updatedEntry, { new: true });
+        response.json(resultingEntry.toJSON());
+    } catch (error) {
+        next(error);
+    }
 });
 
 blogsRouter.delete('/', (request, response) => {

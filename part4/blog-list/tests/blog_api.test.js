@@ -9,6 +9,7 @@ const api = supertest(app);
 const jestTimeout = 200000;
 
 const Blog = require('../models/blog');
+const { update } = require('../models/blog');
 
 // Prepare Database for Tests
 beforeEach(async () => {
@@ -111,6 +112,27 @@ describe('When there are a few entries available...', () => {
             const ids = blogsAtEnd.map((entry) => entry.id);
             expect(ids).not.toContain(removedEntry.ids);
         }, jestTimeout);
+
+        test('Updating an entry changes its contents.', async () => {
+            // Create Updated Entry out of Dummy
+            const entries = await helper.blogsInDb();
+            const originalEntry = entries[0];
+            const updatedEntry = { ...originalEntry, likes: originalEntry.likes + 1 };
+
+            // Update Entry
+            await api
+                .put(`/api/blogs/${updatedEntry.id}`)
+                .send(updatedEntry);
+
+            // Get Current Entries
+            const response = await api
+                .get('/api/blogs');
+
+            const matchingIds = (entry) => entry.id === updatedEntry.id;
+            const entryInDb = response.body.filter(matchingIds).pop();
+
+            expect(entryInDb.likes).toBe(updatedEntry.likes);
+        });
     });
 });
 
