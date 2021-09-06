@@ -9,7 +9,6 @@ const api = supertest(app);
 const jestTimeout = 200000;
 
 const Blog = require('../models/blog');
-const { update } = require('../models/blog');
 
 // Prepare Database for Tests
 beforeEach(async () => {
@@ -127,7 +126,6 @@ describe('When there are a few entries available...', () => {
             // Get Current Entries
             const response = await api
                 .get('/api/blogs');
-
             const matchingIds = (entry) => entry.id === updatedEntry.id;
             const entryInDb = response.body.filter(matchingIds).pop();
 

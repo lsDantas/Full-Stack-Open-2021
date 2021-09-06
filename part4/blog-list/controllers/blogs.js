@@ -1,6 +1,5 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
-const { nonExistingId } = require('../tests/blog_test_helper');
 
 blogsRouter.post('/', (request, response) => {
     const blog = new Blog(request.body);
