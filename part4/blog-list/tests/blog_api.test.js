@@ -83,6 +83,22 @@ describe('Blog Entries', () => {
 
         expect(matchingBlog.likes).toBe(0);
     });
+
+    test('Missing title and url data lead to 404 Bad Request.', async () => {
+        const newEntry = new Blog(
+            {
+                author: 'No One',
+                likes: '0',
+            },
+        );
+
+        const response = await api
+            .post('/api/blogs')
+            .send(newEntry)
+            .set('Content-Type', 'application/json');
+
+        expect(response.status).toBe(400);
+    });
 });
 
 // Post-Test Actions
