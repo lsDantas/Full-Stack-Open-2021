@@ -1,24 +1,41 @@
 /* eslint-disable no-underscore-dangle */
 const blogsRouter = require('express').Router();
+const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog');
 const User = require('../models/user');
+
+const getTokenFrom = (request) => {
+    const authorization = request.get('authorization');
+
+    if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+        return authorization.substring(7);
+    }
+
+    return null;
+};
 
 blogsRouter.post('/', async (request, response) => {
     const { body } = request;
 
+    // Check for Valid Token
+    const token = getTokenFrom(request);
+    const decodedToken = jwt.verify(token, process.env.SECRET);
+
+    if (!token || !decodedToken.id) {
+        return response.status(401).json({ error: 'Token missing or invalid.' });
+    }
+
+    const author = await User.findById(decodedToken.id);
+
     // All Fields Present
     if (body.title && body.url && body.likes !== undefined) {
-        // Randomly Select Author
-        const authors = await User.find({});
-        const selectedAuthor = authors.pop();
-
         // Create New Blog Entry
         const blog = new Blog(
             {
                 title: body.title,
                 url: body.url,
                 likes: body.likes,
-                user: selectedAuthor._id,
+                user: author._id,
             },
         );
 
@@ -29,8 +46,8 @@ blogsRouter.post('/', async (request, response) => {
             const savedBlog = await populatedBlog.save();
 
             // Update Author Blogs
-            selectedAuthor.blogs = selectedAuthor.blogs.concat(savedBlog);
-            await selectedAuthor.save();
+            author.blogs = author.blogs.concat(savedBlog);
+            await author.save();
 
             // Respond
             return response.status(201).json(savedBlog.toJSON());
