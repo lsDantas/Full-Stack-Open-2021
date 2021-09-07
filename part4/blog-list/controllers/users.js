@@ -24,18 +24,18 @@ usersRouter.post('/', async (request, response) => {
             // Save User
             try {
                 const savedUser = await user.save();
-                response.json(savedUser.toJSON());
+                return response.json(savedUser.toJSON());
             } catch (error) {
                 // Username in Use
-                response.status(422).send({ error: 'Invalid username.' });
+                return response.status(422).json({ error: 'Invalid username.' }).end();
             }
         } else {
             // Password too Short
-            response.status(422).send({ error: 'Invalid password.' });
+            return response.status(422).json({ error: 'Invalid password.' }).end();
         }
     } else {
         // Missing Fields in User Creation Request
-        response.status(422).send({ error: 'Missing fields.' });
+        return response.status(422).json({ error: 'Missing fields.' }).end();
     }
 });
 
@@ -44,7 +44,7 @@ usersRouter.get('/', async (request, response) => {
         .find({}).populate('blogs', { title: 1, url: 1, likes: 1 });
 
     const users = usersData.map((user) => user.toJSON());
-    response.json(users);
+    return response.json(users);
 });
 
 module.exports = usersRouter;

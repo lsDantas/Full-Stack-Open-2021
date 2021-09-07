@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
@@ -27,18 +28,18 @@ blogsRouter.post('/', async (request, response) => {
                 .populate('user', { username: 1, name: 1 });
             const savedBlog = await populatedBlog.save();
 
-            // Update User
+            // Update Author Blogs
             selectedAuthor.blogs = selectedAuthor.blogs.concat(savedBlog);
             await selectedAuthor.save();
 
             // Respond
-            response.status(201).json(savedBlog.toJSON());
+            return response.status(201).json(savedBlog.toJSON());
         } catch (error) {
-            response.status(422).send({ error: 'Invalid Blog.' });
+            return response.status(422).json({ error: 'Invalid Blog.' }).end();
         }
     } else {
-        // Missing Fields in User Creation Request
-        response.status(422).send({ error: 'Missing fields.' });
+        // Missing Fields in Blog Creation Request
+        return response.status(422).json({ error: 'Missing fields.' }).end();
     }
 });
 
@@ -47,7 +48,7 @@ blogsRouter.get('/', async (request, response) => {
         .find({}).populate('user', { username: 1, name: 1 });
 
     const entries = blogs.map((blog) => blog.toJSON());
-    response.json(entries);
+    return response.json(entries);
 });
 
 blogsRouter.put('/:id', async (request, response, next) => {
