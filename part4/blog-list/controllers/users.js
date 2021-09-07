@@ -8,28 +8,34 @@ usersRouter.post('/', async (request, response) => {
 
     // All Fields Present
     if (body.username && body.name && body.password) {
-        // Generate Hash
-        const saltRounds = 10;
-        const passwordHash = await bcrypt.hash(body.password, saltRounds);
+        // Valid Password
+        if (body.password.length >= 3) {
+            // Generate Hash
+            const saltRounds = 10;
+            const passwordHash = await bcrypt.hash(body.password, saltRounds);
 
-        // Prepare User
-        const user = new User({
-            username: body.username,
-            name: body.name,
-            passwordHash,
-        });
+            // Prepare User
+            const user = new User({
+                username: body.username,
+                name: body.name,
+                passwordHash,
+            });
 
-        // Save User
-        try {
-            const savedUser = await user.save();
-            response.json(savedUser.toJSON());
-        } catch (error) {
-            // Username in Use
-            response.status(422).json({ error: 'Username in use.' });
+            // Save User
+            try {
+                const savedUser = await user.save();
+                response.json(savedUser.toJSON());
+            } catch (error) {
+                // Username in Use
+                response.status(422).send({ error: 'Invalid username.' });
+            }
+        } else {
+            // Password too Short
+            response.status(422).send({ error: 'Invalid password.' });
         }
     } else {
         // Missing Fields in User Creation Request
-        response.status(422).json({ error: 'Missing fields.' });
+        response.status(422).send({ error: 'Missing fields.' });
     }
 });
 

@@ -10,7 +10,7 @@ blogsRouter.post('/', (request, response) => {
             response.status(201).json(result.toJSON());
         })
         .catch(() => {
-            response.status(400).json({ error: 'Fields missing.' });
+            response.status(400).send({ error: 'Fields missing.' });
         });
 });
 
