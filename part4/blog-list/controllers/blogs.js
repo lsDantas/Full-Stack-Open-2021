@@ -69,7 +69,7 @@ blogsRouter.put('/:id', async (request, response, next) => {
     }
 });
 
-blogsRouter.delete('/', async (request, response) => {
+blogsRouter.delete('/:id', async (request, response) => {
     // Check for Valid Token
     const decodedToken = jwt.verify(request.token, process.env.SECRET);
 
@@ -77,16 +77,16 @@ blogsRouter.delete('/', async (request, response) => {
         return response.status(401).json({ error: 'Token missing or invalid.' });
     }
     // Check if Author Correct
-    const { id } = request.body;
-    if (id) {
+    if (request.params.id) {
         try {
             const blog = await Blog
-                .findById(id)
+                .findById(request.params.id)
                 .populate('user', { _id: 1 });
 
             const matchingIds = (blog.user._id.toString() === decodedToken.id.toString());
             if (matchingIds) {
-                await Blog.findOneAndDelete({ _id: id });
+                await Blog
+                    .findOneAndDelete({ _id: request.params.id });
                 response.status(204).end();
             }
         } catch (error) {
