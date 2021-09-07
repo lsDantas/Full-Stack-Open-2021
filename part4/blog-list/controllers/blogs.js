@@ -1,26 +1,53 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
-blogsRouter.post('/', (request, response) => {
-    const blog = new Blog(request.body);
+blogsRouter.post('/', async (request, response) => {
+    const { body } = request;
 
-    blog
-        .save()
-        .then((result) => {
-            response.status(201).json(result.toJSON());
-        })
-        .catch(() => {
-            response.status(400).send({ error: 'Fields missing.' });
-        });
+    // All Fields Present
+    if (body.title && body.url && body.likes !== undefined) {
+        // Randomly Select Author
+        const authors = await User.find({});
+        const selectedAuthor = authors.pop();
+
+        // Create New Blog Entry
+        const blog = new Blog(
+            {
+                title: body.title,
+                url: body.url,
+                likes: body.likes,
+                user: selectedAuthor._id,
+            },
+        );
+
+        try {
+            // Save Blog Entry
+            const populatedBlog = await blog
+                .populate('user', { username: 1, name: 1 });
+            const savedBlog = await populatedBlog.save();
+
+            // Update User
+            selectedAuthor.blogs = selectedAuthor.blogs.concat(savedBlog);
+            await selectedAuthor.save();
+
+            // Respond
+            response.status(201).json(savedBlog.toJSON());
+        } catch (error) {
+            response.status(422).send({ error: 'Invalid Blog.' });
+        }
+    } else {
+        // Missing Fields in User Creation Request
+        response.status(422).send({ error: 'Missing fields.' });
+    }
 });
 
-blogsRouter.get('/', (request, response) => {
-    Blog
-        .find({})
-        .then((blogs) => {
-            const entries = blogs.map((blog) => blog.toJSON());
-            response.json(entries);
-        });
+blogsRouter.get('/', async (request, response) => {
+    const blogs = await Blog
+        .find({}).populate('user', { username: 1, name: 1 });
+
+    const entries = blogs.map((blog) => blog.toJSON());
+    response.json(entries);
 });
 
 blogsRouter.put('/:id', async (request, response, next) => {
