@@ -5,16 +5,12 @@ const Blog = require('../models/blog');
 const User = require('../models/user');
 
 blogsRouter.post('/', async (request, response) => {
-    const { body } = request;
+    const { body, user } = request;
 
-    // Check for Valid Token
-    const decodedToken = jwt.verify(request.token, process.env.SECRET);
-
-    if (!decodedToken.id) {
-        return response.status(401).json({ error: 'Token missing or invalid.' });
+    // User not Identified from Token
+    if (!user) {
+        response.status(401).json({ error: 'Token missing or invalid.' });
     }
-
-    const author = await User.findById(decodedToken.id);
 
     // All Fields Present
     if (body.title && body.url && body.likes !== undefined) {
@@ -24,7 +20,7 @@ blogsRouter.post('/', async (request, response) => {
                 title: body.title,
                 url: body.url,
                 likes: body.likes,
-                user: author._id,
+                user: user._id,
             },
         );
 
@@ -35,8 +31,8 @@ blogsRouter.post('/', async (request, response) => {
             const savedBlog = await populatedBlog.save();
 
             // Update Author Blogs
-            author.blogs = author.blogs.concat(savedBlog);
-            await author.save();
+            user.blogs = user.blogs.concat(savedBlog);
+            await user.save();
 
             // Respond
             return response.status(201).json(savedBlog.toJSON());
@@ -71,9 +67,10 @@ blogsRouter.put('/:id', async (request, response, next) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
     // Check for Valid Token
-    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+    const { user } = request;
 
-    if (!decodedToken.id) {
+    // User not Identified from Token
+    if (!user) {
         return response.status(401).json({ error: 'Token missing or invalid.' });
     }
     // Check if Author Correct
@@ -83,12 +80,19 @@ blogsRouter.delete('/:id', async (request, response) => {
                 .findById(request.params.id)
                 .populate('user', { _id: 1 });
 
-            const matchingIds = (blog.user._id.toString() === decodedToken.id.toString());
+            // Check Ownership Match
+            const matchingIds = (blog.user._id.toString() === user.id.toString());
             if (matchingIds) {
-                await Blog
-                    .findOneAndDelete({ _id: request.params.id });
-                response.status(204).end();
+                await Blog.findOneAndDelete(
+                    {
+                        _id: request.params.id,
+                    },
+                );
+                return response.status(204).end();
             }
+
+            // Reject if not from Owner
+            return response.status(401).json({ error: 'Invalid token.' });
         } catch (error) {
             return response.status(422).json({ error: 'Invalid content.' });
         }
@@ -96,12 +100,6 @@ blogsRouter.delete('/:id', async (request, response) => {
         // No Blog ID info
         return response.status(422).json({ error: 'Missing content.' });
     }
-    /*
-    try {
-        await Blog.deleteOne(removedBlog);
-    } finally {
-        response.status(204).end();
-    } */
 });
 
 module.exports = blogsRouter;
