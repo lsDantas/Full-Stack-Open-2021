@@ -7,4 +7,5 @@ const getAll = () => {
   return request.then((response) => response.data);
 };
 
-export default { getAll };
+const blogService = { getAll };
+export default blogService;
