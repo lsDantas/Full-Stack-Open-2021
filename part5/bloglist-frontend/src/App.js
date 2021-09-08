@@ -19,6 +19,17 @@ const App = () => {
     blogService.getAll().then((receivedBlogs) => setBlogs(receivedBlogs));
   }, []);
 
+  // Check for Logged-In User
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
+    
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      blogService.setToken(user.token);
+    }
+  }, []);
+
   // Forms
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -27,7 +38,17 @@ const App = () => {
       const user = await loginService.login({
         username, password
       });
+
+      // Save User
+      window.localStorage.setItem(
+        'loggedBlogAppUser', JSON.stringify(user)
+      );
+      blogService.setToken(user.token);
       setUser(user);
+
+      // Clear Form
+      setUsername('');
+      setPassword('');
     } catch (exception) {
       // Invalid Credentials
       setErrorMessage('Wrong credentials.');
@@ -35,8 +56,11 @@ const App = () => {
         setErrorMessage(null) 
       }, 5000);
     }
-    setUsername('');
-    setPassword('');
+  };
+
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedBlogAppUser');
+    setUser(null);
   };
 
   const loginForm = () => (
@@ -71,20 +95,26 @@ const App = () => {
     </div>
   );
 
+  const loggedInInterface = () => (
+    <div>
+      <p>
+        <form onSubmit={handleLogout}>
+          {user.name} logged-in
+          <button type="submit">Logout</button>
+        </form>
+      </p>
+      <br></br>
+      {blogsForm()}
+    </div>
+  );
+
   return (
     <div>
       {errorMessage !== null && <Notification message={errorMessage} notificationStyle="failureNotification"/>}
       { user === null
         ? loginForm()
-        : (
-          <div>
-            <p>
-              {user.name} logged-in
-            </p>
-            <br></br>
-            {blogsForm()}
-          </div>
-        )}
+        : loggedInInterface()
+      }
     </div>
   );
 };
