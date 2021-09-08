@@ -35,7 +35,7 @@ usersRouter.post('/', async (request, response) => {
         }
     } else {
         // Missing Fields in User Creation Request
-        return response.status(422).json({ error: 'Missing fields.' }).end();
+        return response.status(400).json({ error: 'Missing fields.' }).end();
     }
 });
 

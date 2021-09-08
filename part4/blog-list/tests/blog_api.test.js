@@ -1,28 +1,62 @@
 const mongoose = require('mongoose');
 const supertest = require('supertest');
+const bcrypt = require('bcrypt');
 const app = require('../app');
 const helper = require('./blog_test_helper');
 
 const api = supertest(app);
 const jestTimeout = 200000;
 
+const User = require('../models/user');
 const Blog = require('../models/blog');
 
 // Prepare Database for Tests
 beforeEach(async () => {
-    // Clear Database and Add Dummy Entries
+    // Clear Database
+    await User.deleteMany({});
     await Blog.deleteMany({});
-    await Blog.insertMany(helper.initialBlogs);
+
+    // Prepare Dummy Users
+    const hashPasswords = async ({ username, name, password }) => {
+        const saltRounds = 10;
+        const passwordHash = await bcrypt.hash(password, saltRounds);
+
+        const userEntry = {
+            username,
+            name,
+            passwordHash,
+        };
+
+        return userEntry;
+    };
+    const userPromises = helper.initialUsers.map(hashPasswords);
+    const newUsers = await Promise.all(userPromises);
+
+    // Add Dummy Users
+    await User.insertMany(newUsers);
+
+    // Fetch Dummy Users in Database
+    const availableUsers = await helper.usersInDb();
+
+    // Prepare Dummy Blogs
+    const addAuthorsToBlogs = async (blog) => {
+        const randomIndex = Math.floor(Math.random() * availableUsers.length);
+        return { ...blog, user: availableUsers[randomIndex].id };
+    };
+    const blogPromises = helper.initialBlogs.map(addAuthorsToBlogs);
+    const newBlogs = await Promise.all(blogPromises);
+
+    // Add Dummy Blogs
+    await Blog.insertMany(newBlogs);
 }, jestTimeout);
 
 // Tests
 describe('When there are a few entries available...', () => {
     test('Returns correct amount of blog posts in JSON format.', async () => {
-        const response = await api
-            .get('/api/blogs')
-            .expect(200)
-            .expect('Content-Type', /application\/json/);
-
+        const response = await api.get('/api/blogs');
+        expect(response.status).toBe(200);
+        // expect(response.headers[content-type])
+        // expect('Content-Type', /application\/json/);
         expect(response.body).toHaveLength(helper.initialBlogs.length);
     }, jestTimeout);
 
@@ -58,56 +92,99 @@ describe('When there are a few entries available...', () => {
         });
 
         test('Entry without a "likes" property have 0 likes.', async () => {
+            // Prepare Token
+            const user = helper.initialUsers[0];
+
+            const loginResponse = await api
+                .post('/api/login')
+                .send(user);
+            const { token } = loginResponse.body;
+
             // Add New Entry
-            const newEntry = new Blog(
-                {
-                    title: 'Sample Entry',
-                    author: 'No One',
-                    url: 'http://www.example.com',
-                },
-            );
-            await newEntry.save();
+            const newEntry = {
+                title: 'Sample Entry',
+                url: 'http://www.example.com',
+            };
+            const entryResponse = await api
+                .post('/api/blogs')
+                .send(newEntry)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `bearer ${token}`);
+
+            const addedId = entryResponse.body.id;
 
             // Fetch Blogs and Identify New Entry
             const response = await api
                 .get('/api/blogs');
-            const matchingTitles = (blog) => blog.title === newEntry.title;
+
+            const matchingTitles = (blog) => blog.id === addedId;
             const matchingBlog = response.body.filter(matchingTitles).pop();
 
             expect(matchingBlog.likes).toBe(0);
         });
 
-        test('Entry with missing title or url receives 404 Bad Request.', async () => {
-            const newEntry = new Blog(
-                {
-                    author: 'No One',
-                    likes: '0',
-                },
-            );
+        test('Entry with missing title or url receives 400 Bad Request.', async () => {
+            // Prepare Token
+            const user = helper.initialUsers[0];
+
+            const loginResponse = await api
+                .post('/api/login')
+                .send(user);
+            const { token } = loginResponse.body;
+
+            // Add Blog Entry
+            const newEntry = {
+                url: 'http://www.example.com',
+                likes: 20,
+            };
 
             const response = await api
                 .post('/api/blogs')
                 .send(newEntry)
-                .set('Content-Type', 'application/json');
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `bearer ${token}`);
 
             expect(response.status).toBe(400);
         });
 
         test('Deleted entry successfully removed.', async () => {
-            // Remove First Entry
-            const removedEntry = helper.initialBlogs[0];
-            await api
-                .delete('/api/blogs')
-                .send(removedEntry);
+            // Select Blog Entry and Find Author
+            const blogs = await helper.blogsInDb();
+            const users = await helper.usersInDb();
+
+            // Find Author of Blog Entry
+            const removedEntry = blogs.pop();
+            const removedAuthorId = removedEntry.user.toString();
+
+            // Find Author in User Collection
+            const matchingId = (author) => author.id === removedAuthorId;
+            const authorEntry = users.find(matchingId);
+
+            // Match User with Password List
+            const matchingUsername = (author) => author.username === authorEntry.username;
+            const author = helper.initialUsers.find(matchingUsername);
+
+            // Prepare Token
+            const loginResponse = await api
+                .post('/api/login')
+                .send(author);
+            const { token } = loginResponse.body;
+
+            // Remove Entry
+            const removalResponse = await api
+                .delete(`/api/blogs/${removedEntry.id}`)
+                .send(removedEntry)
+                .set('Content-Type', 'application/json')
+                .set('Authorization', `bearer ${token}`);
 
             const blogsAtEnd = await helper.blogsInDb();
 
             // Check if Entries Count Reduced
-            expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+            expect(blogsAtEnd.length).toBe(helper.initialBlogs.length - 1);
 
             // Check if Removed Entry id still in Database
             const ids = blogsAtEnd.map((entry) => entry.id);
-            expect(ids).not.toContain(removedEntry.ids);
+            expect(ids).not.toContain(removedEntry.id);
         }, jestTimeout);
 
         test('Updating an entry changes its contents.', async () => {

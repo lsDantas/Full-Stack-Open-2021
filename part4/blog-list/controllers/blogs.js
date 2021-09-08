@@ -1,10 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 const blogsRouter = require('express').Router();
 const jwt = require('jsonwebtoken');
+const middleware = require('../utils/middleware');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
     const { body, user } = request;
 
     // User not Identified from Token
@@ -13,13 +14,12 @@ blogsRouter.post('/', async (request, response) => {
     }
 
     // All Fields Present
-    if (body.title && body.url && body.likes !== undefined) {
+    if (body.title && body.url) {
         // Create New Blog Entry
         const blog = new Blog(
             {
                 title: body.title,
                 url: body.url,
-                likes: body.likes,
                 user: user._id,
             },
         );
@@ -41,7 +41,7 @@ blogsRouter.post('/', async (request, response) => {
         }
     } else {
         // Missing Fields in Blog Creation Request
-        return response.status(422).json({ error: 'Missing fields.' }).end();
+        return response.status(400).json({ error: 'Missing fields.' }).end();
     }
 });
 
@@ -65,7 +65,7 @@ blogsRouter.put('/:id', async (request, response, next) => {
     }
 });
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
     // Check for Valid Token
     const { user } = request;
 
@@ -98,7 +98,7 @@ blogsRouter.delete('/:id', async (request, response) => {
         }
     } else {
         // No Blog ID info
-        return response.status(422).json({ error: 'Missing content.' });
+        return response.status(400).json({ error: 'Missing fields.' });
     }
 });
 
