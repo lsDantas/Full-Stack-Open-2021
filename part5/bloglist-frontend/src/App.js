@@ -63,6 +63,17 @@ const App = () => {
     setUser(null);
   };
 
+  const handleCreateBlog = async () => {
+    const blog = {
+      title, 
+      url,
+      author,
+    };
+
+    const newEntry = await loginService.create(blog);
+    setBlogs(blogs.concat(newEntry));
+  };
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <h2>Log in to the Application</h2>
@@ -88,6 +99,37 @@ const App = () => {
     </form>
   );
 
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
+
+  const createBlogForm = () => (
+    <form onSubmit={handleCreateBlog}>
+      Title:
+      <input 
+        type="text"
+        value={title}
+        name="title"
+        onChange={({ target }) => setTitle(target.value)}
+      />
+      Author:
+      <input
+        type="text"
+        value={author}
+        name="author"
+        onChange={({ target }) => setAuthor(target.value)}
+      />
+      URL:
+      <input
+        type="text"
+        value={url}
+        name="url"
+        onChange={({ target }) => setUrl(target.value)}
+      />
+      <button type="submit">Create</button>
+    </form>
+  );
+
   const blogsForm = () => (
     <div>
       <h2>Blogs</h2>
@@ -101,6 +143,8 @@ const App = () => {
         {user.name} logged-in
         <button type="submit">Logout</button>
       </form>
+      <h2>Create New Blog</h2>
+      {createBlogForm()}
       <br></br>
       {blogsForm()}
     </div>

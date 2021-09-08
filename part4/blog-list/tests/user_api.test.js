@@ -25,7 +25,7 @@ describe('On user creation...', () => {
             const response = await api
                 .post('/api/users')
                 .send(incompleteUser);
-            expect(response.status).toBe(422);
+            expect(response.status).toBe(400);
             expect(response.body.error).toBe('Missing fields.');
         });
 
@@ -37,7 +37,7 @@ describe('On user creation...', () => {
             const response = await api
                 .post('/api/users')
                 .send(incompleteUser);
-            expect(response.status).toBe(422);
+            expect(response.status).toBe(400);
             expect(response.body.error).toBe('Missing fields.');
         });
 
@@ -49,7 +49,7 @@ describe('On user creation...', () => {
             const response = await api
                 .post('/api/users')
                 .send(incompleteUser);
-            expect(response.status).toBe(422);
+            expect(response.status).toBe(400);
             expect(response.body.error).toBe('Missing fields.');
         });
     });

@@ -12,11 +12,12 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
     }
 
     // All Fields Present
-    if (body.title && body.url) {
+    if (body.title && body.author && body.url) {
         // Create New Blog Entry
         const blog = new Blog(
             {
                 title: body.title,
+                author: body.author,
                 url: body.url,
                 user: user._id,
             },

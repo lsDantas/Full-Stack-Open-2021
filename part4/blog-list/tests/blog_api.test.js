@@ -103,6 +103,7 @@ describe('When there are a few entries available...', () => {
             // Add New Entry
             const newEntry = {
                 title: 'Sample Entry',
+                author: 'No One',
                 url: 'http://www.example.com',
             };
             const entryResponse = await api
@@ -148,26 +149,26 @@ describe('When there are a few entries available...', () => {
         });
 
         test('Deleted entry successfully removed.', async () => {
-            // Select Blog Entry and Find Author
+            // Select Blog Entry and Find User
             const blogs = await helper.blogsInDb();
             const users = await helper.usersInDb();
 
-            // Find Author of Blog Entry
+            // Find User of Blog Entry
             const removedEntry = blogs.pop();
-            const removedAuthorId = removedEntry.user.toString();
+            const removedUserId = removedEntry.user.toString();
 
-            // Find Author in User Collection
-            const matchingId = (author) => author.id === removedAuthorId;
-            const authorEntry = users.find(matchingId);
+            // Find User in User Collection
+            const matchingId = (user) => user.id === removedUserId;
+            const userEntry = users.find(matchingId);
 
             // Match User with Password List
-            const matchingUsername = (author) => author.username === authorEntry.username;
-            const author = helper.initialUsers.find(matchingUsername);
+            const matchingUsername = (user) => user.username === userEntry.username;
+            const user = helper.initialUsers.find(matchingUsername);
 
             // Prepare Token
             const loginResponse = await api
                 .post('/api/login')
-                .send(author);
+                .send(user);
             const { token } = loginResponse.body;
 
             // Remove Entry
