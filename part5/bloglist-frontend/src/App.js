@@ -58,20 +58,28 @@ const App = () => {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = (event) => {
+    event.preventDefault();
+
     window.localStorage.removeItem('loggedBlogAppUser');
     setUser(null);
   };
 
-  const handleCreateBlog = async () => {
+  const handleCreateBlog = async (event) => {
+    event.preventDefault();
+
     const blog = {
       title, 
-      url,
       author,
+      url,
     };
 
-    const newEntry = await loginService.create(blog);
+    const newEntry = await blogService.create(blog);
     setBlogs(blogs.concat(newEntry));
+
+    setTitle('');
+    setAuthor('');
+    setUrl('');
   };
 
   const loginForm = () => (
@@ -112,6 +120,7 @@ const App = () => {
         name="title"
         onChange={({ target }) => setTitle(target.value)}
       />
+      <br></br>
       Author:
       <input
         type="text"
@@ -119,6 +128,7 @@ const App = () => {
         name="author"
         onChange={({ target }) => setAuthor(target.value)}
       />
+      <br></br>
       URL:
       <input
         type="text"
