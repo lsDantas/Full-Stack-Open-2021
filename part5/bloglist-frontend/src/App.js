@@ -97,12 +97,10 @@ const App = () => {
 
   const loggedInInterface = () => (
     <div>
-      <p>
-        <form onSubmit={handleLogout}>
-          {user.name} logged-in
-          <button type="submit">Logout</button>
-        </form>
-      </p>
+      <form onSubmit={handleLogout}>
+        {user.name} logged-in
+        <button type="submit">Logout</button>
+      </form>
       <br></br>
       {blogsForm()}
     </div>
