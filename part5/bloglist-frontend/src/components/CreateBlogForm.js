@@ -50,37 +50,27 @@ const CreateBlogForm = ( {
 
     };
 
-
     return (
     <form onSubmit={handleCreateBlog}>
         <h2>Create New Blog</h2>
-        Title:
-        <input
-            type="text"
-            value={title}
-            name="title"
-            onChange={({ target }) => setTitle(target.value)}
-        />
-        <br></br>
-        Author:
-        <input
-            type="text"
-            value={author}
-            name="author"
-            onChange={({ target }) => setAuthor(target.value)}
-        />
-        <br></br>
-        URL:
-        <input
-            type="text"
-            value={url}
-            name="url"
-            onChange={({ target }) => setUrl(target.value)}
-        />
-        <br></br>
+        <FieldEntry name="Title" value={title} changeHandler={setTitle} />
+        <FieldEntry name="Author" value={author} changeHandler={setAuthor} />
+        <FieldEntry name="URL" value={url} changeHandler={setUrl} />
         <button type="submit">Create</button>
     </form>
     )
 };
+
+const FieldEntry = ({name, value, changeHandler}) => (
+    <div>
+        {name}
+        <input
+            type="text"
+            value={value}
+            name={name}
+            onChange={({ target }) => changeHandler(target.value)}
+        />
+    </div>
+);
 
 export default CreateBlogForm;

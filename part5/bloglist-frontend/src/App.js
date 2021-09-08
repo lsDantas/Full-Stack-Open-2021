@@ -4,7 +4,7 @@ import './index.css'
 // Components
 import Togglable from './components/Toggable';
 import Notification from './components/Notification';
-import Blog from './components/Blog';
+import BlogList from './components/BlogList';
 import CreateBlogForm from './components/CreateBlogForm'
 
 // Services
@@ -24,7 +24,7 @@ const App = () => {
   // References
   const createBlogFormRef = useRef();
 
-  // Fetch Blogs from back End
+  // Fetch Blogs from Back End
   useEffect(() => {
     blogService.getAll().then((receivedBlogs) => setBlogs(receivedBlogs));
   }, []);
@@ -100,13 +100,6 @@ const App = () => {
     </form>
   );
 
-  const blogsForm = () => (
-    <div>
-      <h2>Blogs</h2>
-      {blogs.map((entry) => <Blog key={entry.id} blog={entry} />)}
-    </div>
-  );
-
   const loggedInInterface = () => (
     <div>
       <h1>Blogs</h1>
@@ -124,7 +117,7 @@ const App = () => {
         />
       </Togglable>
       <br></br>
-      {blogsForm()}
+      <BlogList blogs={blogs} />
     </div>
   );
 
