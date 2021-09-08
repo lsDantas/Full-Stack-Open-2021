@@ -171,7 +171,7 @@ describe('When there are a few entries available...', () => {
             const { token } = loginResponse.body;
 
             // Remove Entry
-            const removalResponse = await api
+            await api
                 .delete(`/api/blogs/${removedEntry.id}`)
                 .send(removedEntry)
                 .set('Content-Type', 'application/json')
