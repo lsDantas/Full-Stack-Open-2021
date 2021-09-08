@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './index.css'
 
 // Components
@@ -17,14 +17,12 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
 
-  // Create New Blog
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
-
   // Notifications
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
+
+  // References
+  const createBlogFormRef = useRef();
 
   // Fetch Blogs from back End
   useEffect(() => {
@@ -77,39 +75,6 @@ const App = () => {
     setUser(null);
   };
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault();
-
-    const blog = {
-      title, 
-      author,
-      url,
-    };
-
-    try {
-      // Add Blog
-      const newEntry = await blogService.create(blog);
-      setBlogs(blogs.concat(newEntry));
-
-      // Clear Form
-      setTitle('');
-      setAuthor('');
-      setUrl('');
-
-      // Show Success Notification
-      setSuccessMessage(`Added ${newEntry.title} by ${newEntry.author}!`);
-      setTimeout(() => {
-        setSuccessMessage(null)
-      }, 5000);
-    } catch {
-      setErrorMessage('Failed to add blog.');
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000);
-    }
-    
-  };
-
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <h2>Log in to the Application</h2>
@@ -149,15 +114,13 @@ const App = () => {
         {user.name} logged-in
         <button type="submit">Logout</button>
       </form>
-      <Togglable buttonLabel="Create New Blog">
+      <Togglable buttonLabel="Create New Blog" ref={createBlogFormRef}>
         <CreateBlogForm 
-          handleCreateBlog={handleCreateBlog}
-          setTitle={setTitle}
-          setAuthor={setAuthor}
-          setUrl={setUrl}
-          title={title}
-          author={author}
-          url={url}
+          blogs={blogs}
+          handleBlogUpdate={setBlogs}
+          setSuccessMessage={setSuccessMessage}
+          setErrorMessage={setErrorMessage}
+          createBlogFormRef={createBlogFormRef}
         />
       </Togglable>
       <br></br>

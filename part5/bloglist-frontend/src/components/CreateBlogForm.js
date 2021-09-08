@@ -1,14 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const CreateBlogForm = ({ 
-    handleCreateBlog,
-    setTitle,
-    setAuthor,
-    setUrl,
-    title,
-    author,
-    url
+import blogService from '../services/blogs';
+
+const CreateBlogForm = ( { 
+        blogs, 
+        handleBlogUpdate, 
+        setSuccessMessage,
+        setErrorMessage,
+        createBlogFormRef
     }) => {
+    
+    // Form State
+    const [title, setTitle] = useState('');
+    const [author, setAuthor] = useState('');
+    const [url, setUrl] = useState('');
+
+    const handleCreateBlog = async (event) => {
+        event.preventDefault();
+
+        const blog = {
+            title,
+            author,
+            url,
+        };
+
+        try {
+            // Add Blog
+            const newEntry = await blogService.create(blog);
+            handleBlogUpdate(blogs.concat(newEntry));
+
+            // Clear Form
+            setTitle('');
+            setAuthor('');
+            setUrl('');
+
+            // Show Success Notification
+            setSuccessMessage(`Added ${newEntry.title} by ${newEntry.author}!`);
+            setTimeout(() => {
+                setSuccessMessage(null)
+            }, 5000);
+
+            createBlogFormRef.current.toggleVisibility();
+        } catch {
+            setErrorMessage('Failed to add blog.');
+            setTimeout(() => {
+                setErrorMessage(null)
+            }, 5000);
+        }
+
+    };
 
 
     return (
