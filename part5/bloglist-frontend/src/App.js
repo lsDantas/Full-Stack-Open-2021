@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './index.css'
-import Blog from './components/Blog';
+
+// Components
+import Togglable from './components/Toggable';
 import Notification from './components/Notification';
+import Blog from './components/Blog';
+import CreateBlogForm from './components/CreateBlogForm'
+
+// Services
 import blogService from './services/blogs';
 import loginService from './services/login';
 
@@ -10,6 +16,11 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+
+  // Create New Blog
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
 
   // Notifications
   const [successMessage, setSuccessMessage] = useState(null);
@@ -124,39 +135,6 @@ const App = () => {
     </form>
   );
 
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
-
-  const createBlogForm = () => (
-    <form onSubmit={handleCreateBlog}>
-      Title:
-      <input 
-        type="text"
-        value={title}
-        name="title"
-        onChange={({ target }) => setTitle(target.value)}
-      />
-      <br></br>
-      Author:
-      <input
-        type="text"
-        value={author}
-        name="author"
-        onChange={({ target }) => setAuthor(target.value)}
-      />
-      <br></br>
-      URL:
-      <input
-        type="text"
-        value={url}
-        name="url"
-        onChange={({ target }) => setUrl(target.value)}
-      />
-      <button type="submit">Create</button>
-    </form>
-  );
-
   const blogsForm = () => (
     <div>
       <h2>Blogs</h2>
@@ -171,8 +149,17 @@ const App = () => {
         {user.name} logged-in
         <button type="submit">Logout</button>
       </form>
-      <h2>Create New Blog</h2>
-      {createBlogForm()}
+      <Togglable buttonLabel="Create New Blog">
+        <CreateBlogForm 
+          handleCreateBlog={handleCreateBlog}
+          setTitle={setTitle}
+          setAuthor={setAuthor}
+          setUrl={setUrl}
+          title={title}
+          author={author}
+          url={url}
+        />
+      </Togglable>
       <br></br>
       {blogsForm()}
     </div>
