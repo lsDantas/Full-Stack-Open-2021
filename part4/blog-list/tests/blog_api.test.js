@@ -53,10 +53,10 @@ beforeEach(async () => {
 // Tests
 describe('When there are a few entries available...', () => {
     test('Returns correct amount of blog posts in JSON format.', async () => {
-        const response = await api.get('/api/blogs');
-        expect(response.status).toBe(200);
-        // expect(response.headers[content-type])
-        // expect('Content-Type', /application\/json/);
+        const response = await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-Type', /application\/json/);
         expect(response.body).toHaveLength(helper.initialBlogs.length);
     }, jestTimeout);
 
