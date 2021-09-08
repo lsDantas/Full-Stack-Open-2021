@@ -12,6 +12,7 @@ const App = () => {
   const [user, setUser] = useState(null);
 
   // Notifications
+  const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
   // Fetch Blogs from back End
@@ -74,12 +75,28 @@ const App = () => {
       url,
     };
 
-    const newEntry = await blogService.create(blog);
-    setBlogs(blogs.concat(newEntry));
+    try {
+      // Add Blog
+      const newEntry = await blogService.create(blog);
+      setBlogs(blogs.concat(newEntry));
 
-    setTitle('');
-    setAuthor('');
-    setUrl('');
+      // Clear Form
+      setTitle('');
+      setAuthor('');
+      setUrl('');
+
+      // Show Success Notification
+      setSuccessMessage(`Added ${newEntry.title} by ${newEntry.author}!`);
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000);
+    } catch {
+      setErrorMessage('Failed to add blog.');
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000);
+    }
+    
   };
 
   const loginForm = () => (
@@ -149,6 +166,7 @@ const App = () => {
 
   const loggedInInterface = () => (
     <div>
+      <h1>Blogs</h1>
       <form onSubmit={handleLogout}>
         {user.name} logged-in
         <button type="submit">Logout</button>
@@ -162,6 +180,7 @@ const App = () => {
 
   return (
     <div>
+      {successMessage !== null && <Notification message={successMessage} notificationStyle="successNotification" />}
       {errorMessage !== null && <Notification message={errorMessage} notificationStyle="failureNotification"/>}
       { user === null
         ? loginForm()
