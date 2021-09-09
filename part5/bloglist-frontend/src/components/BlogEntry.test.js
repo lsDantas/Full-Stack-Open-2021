@@ -7,7 +7,7 @@ import BlogEntry from './BlogEntry';
 
 describe('<BlogEntry />', () => {
 
-  test('Initially renders blog\'s title and author, but not url and number of likes.', () => {
+  test('Initially renders blog\'s title and author, but not url and number of likes. (BROKEN TEST)', () => {
 
     const mockBlog = {
       title: 'React patterns',
