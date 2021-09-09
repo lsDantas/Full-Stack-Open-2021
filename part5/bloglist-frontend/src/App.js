@@ -123,7 +123,7 @@ const App = () => {
         />
       </Togglable>
       <br></br>
-      <BlogList blogs={blogs} setBlogs={setBlogs} setErrorMessage={setErrorMessage} />
+      <BlogList blogs={blogs} setBlogs={setBlogs} setErrorMessage={setErrorMessage} user={user} />
     </div>
   );
 
