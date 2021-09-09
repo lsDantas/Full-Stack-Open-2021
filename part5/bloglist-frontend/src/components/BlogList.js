@@ -2,16 +2,47 @@ import React, { useState } from 'react';
 
 import '../index.css'
 
-const BlogList = ({ blogs }) => (
-  <div>
-    <h2>Blogs</h2>
-    {blogs.map((entry) => <BlogEntry key={entry.id} blog={entry} />)}
-  </div>
-);
+import blogService from '../services/blogs';
 
-const BlogEntry = ({ blog }) => { 
+const BlogList = ({ blogs, setBlogs, setErrorMessage }) => {
+  // Like Update Handler
+  const likeUpdater = (blog) => {
+    const updateHandler = async () => {
+      // Edit Blog
+      const newBlog = { id: blog.id, likes: blog.likes + 1 };
+
+      try {
+        // Update blogs in Server
+        const updatedBlog = await blogService.update(newBlog);
+
+        // Update Blogs Locally
+        const matchingBlogs = (blog) => (blog.id === updatedBlog.id) ? updatedBlog : blog;
+        const updatedBlogs = blogs.map(matchingBlogs);
+        
+        setBlogs(updatedBlogs);
+      } catch (exception) {
+        // Update Failed
+        setErrorMessage('Unable to update likes.');
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000);
+      }
+    }
+    
+    return updateHandler;
+  };
+  
+  return (
+    <div>
+      <h2>Blogs</h2>
+      {blogs.map((blog) => <BlogEntry key={blog.id} blog={blog} updateHandler={likeUpdater(blog)} />)}
+    </div>
+  )
+};
+
+const BlogEntry = ({ blog, updateHandler}) => {
+  // Info Card Visibility
   const [visible, setVisible] = useState(false);
-
   const toggleLabel = visible ? 'Hide' : 'Show';
 
   const toggleVisibility = () => {
@@ -22,20 +53,20 @@ const BlogEntry = ({ blog }) => {
     <div className="blogStyle">
       {blog.title} - {blog.author}
       <button onClick={toggleVisibility}>{toggleLabel}</button>
-      {visible === true && blogInfoCard(blog)}
+      {visible === true && <BlogInfoCard blog={blog} updateHandler={updateHandler} />}
     </div>
   ) 
 };
 
-const blogInfoCard = (blog) => (
-  <div>
-    {blog.url}
-    <br></br>
-    Likes {blog.likes}
-    <button>Like</button>
-    <br></br>
-    {blog.user.name}
-  </div>
+const BlogInfoCard = ({ blog, updateHandler }) => (
+    <div>
+      {blog.url}
+      <br></br>
+      Likes {blog.likes}
+    <button onClick={updateHandler}>Like</button>
+      <br></br>
+      {blog.user.name}
+    </div>
 );
 
 
