@@ -41,7 +41,7 @@ const CreateBlogForm = ({
       }, 5000);
 
       createBlogFormRef.current.toggleVisibility();
-    } catch {
+    } catch (exception) {
       setErrorMessage('Failed to add blog.');
       setTimeout(() => {
         setErrorMessage(null)
@@ -56,15 +56,16 @@ const CreateBlogForm = ({
       <FieldEntry name="Title" value={title} changeHandler={setTitle} />
       <FieldEntry name="Author" value={author} changeHandler={setAuthor} />
       <FieldEntry name="URL" value={url} changeHandler={setUrl} />
-      <button type="submit">Create</button>
+      <button className="createButton" type="submit">Create</button>
     </form>
-  )
+  );
 };
 
 const FieldEntry = ({ name, value, changeHandler }) => (
   <div>
     {name}
     <input
+      className={name}
       type="text"
       value={value}
       name={name}
