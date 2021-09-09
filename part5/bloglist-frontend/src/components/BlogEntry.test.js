@@ -7,9 +7,6 @@ import BlogEntry from './BlogEntry';
 
 test('BlogEntry renders blog\'s title and author, but not url and number of likes.', () => {
 
-  const mockUpdateHandler = jest.fn();
-  const mockRemovalHandler = jest.fn();
-
   const mockBlog = {
     title: 'React patterns',
     author: 'Michael Chan',
@@ -25,8 +22,6 @@ test('BlogEntry renders blog\'s title and author, but not url and number of like
 
   const component = render( <BlogEntry
     blog={mockBlog}
-    updateHandler={mockUpdateHandler}
-    removalHandler={mockRemovalHandler}
     user={mockUser}
   />);
 
