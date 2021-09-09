@@ -17,8 +17,14 @@ const BlogList = ({ blogs, setBlogs, setErrorMessage }) => {
         
         // Update Blogs Locally
         const matchingBlogs = (blog) => (blog.id === updatedBlog.id) ? updatedBlog : blog;
-        const updatedBlogs = blogs.map(matchingBlogs);
 
+        // Sort comparison Function - Descending Likes
+        const byLikes = (blog1,blog2) => blog2.likes - blog1.likes;
+
+        const updatedBlogs = blogs
+          .map(matchingBlogs)
+          .sort(byLikes);
+        
         setBlogs(updatedBlogs);
       } catch (exception) {
         // Update Failed

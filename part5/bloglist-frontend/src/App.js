@@ -26,7 +26,13 @@ const App = () => {
 
   // Fetch Blogs from Back End
   useEffect(() => {
-    blogService.getAll().then((receivedBlogs) => setBlogs(receivedBlogs));
+    // Sort comparison Function - Descending Likes
+    const byLikes = (blog1, blog2) => blog2.likes - blog1.likes;
+
+    blogService
+      .getAll()
+      .then((receivedBlogs) => receivedBlogs.sort(byLikes))
+      .then((receivedBlogs) => setBlogs(receivedBlogs));
   }, []);
 
   // Check for Logged-In User
