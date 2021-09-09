@@ -7,7 +7,7 @@ import BlogEntry from './BlogEntry';
 
 describe('<BlogEntry />', () => {
 
-  test('BlogEntry renders blog\'s title and author, but not url and number of likes.', () => {
+  test('Initially renders blog\'s title and author, but not url and number of likes.', () => {
 
     const mockBlog = {
       title: 'React patterns',
@@ -33,7 +33,7 @@ describe('<BlogEntry />', () => {
     expect(component.container).not.toHaveTextContent('Likes');
   });
 
-  test('Url and number of likes when button pressed.', () => {
+  test('When Show button clicked, shows url and number of likes.', () => {
 
     const mockBlog = {
       title: 'React patterns',
@@ -58,5 +58,38 @@ describe('<BlogEntry />', () => {
 
     expect(component.container).toHaveTextContent(mockBlog.url);
     expect(component.container).toHaveTextContent('Likes');
+  });
+
+  test('Two clicks to Like button produce two handler calls.', () => {
+
+    const mockBlog = {
+      title: 'React patterns',
+      author: 'Michael Chan',
+      url: 'https://reactpatterns.com/',
+      likes: 15,
+      user: {
+        username: 'Blog Owner',
+      },
+    };
+    const mockUser = {
+      username: 'Token User',
+    };
+
+    const mockUpdateHandler = jest.fn();
+
+    const component = render(<BlogEntry
+      blog={mockBlog}
+      updateHandler={mockUpdateHandler}
+      user={mockUser}
+    />);
+
+    const showButton = component.getByText('Show');
+    fireEvent.click(showButton);
+
+    const likeButton = component.getByText('Like');
+    fireEvent.click(likeButton);
+    fireEvent.click(likeButton);
+
+    expect(mockUpdateHandler.mock.calls).toHaveLength(2);
   });
 });
