@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './index.css'
+import './index.css';
 
 // Components
 import Togglable from './components/Togglable';
 import Notification from './components/Notification';
 import BlogList from './components/BlogList';
-import CreateBlogForm from './components/CreateBlogForm'
+import CreateBlogForm from './components/CreateBlogForm';
 
 // Services
 import blogService from './services/blogs';
@@ -38,14 +38,14 @@ const App = () => {
   // Check for Logged-In User
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
-    
+
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
       blogService.setToken(user.token);
     }
   }, []);
-
+  const a = 2;
   // Forms
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -68,8 +68,8 @@ const App = () => {
     } catch (exception) {
       // Invalid Credentials
       setErrorMessage('Wrong credentials.');
-      setTimeout(() => { 
-        setErrorMessage(null) 
+      setTimeout(() => {
+        setErrorMessage(null);
       }, 5000);
     }
   };
@@ -114,7 +114,7 @@ const App = () => {
         <button type="submit">Logout</button>
       </form>
       <Togglable buttonLabel="Create New Blog" ref={createBlogFormRef}>
-        <CreateBlogForm 
+        <CreateBlogForm
           blogs={blogs}
           handleBlogUpdate={setBlogs}
           setSuccessMessage={setSuccessMessage}

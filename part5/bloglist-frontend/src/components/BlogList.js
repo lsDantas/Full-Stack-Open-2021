@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import '../index.css'
+import '../index.css';
 
 import blogService from '../services/blogs';
 
@@ -21,15 +21,15 @@ const BlogList = ({ blogs, setBlogs, setErrorMessage, user }) => {
           // Update Failed
           setErrorMessage('Unable to delete blog.');
           setTimeout(() => {
-            setErrorMessage(null)
+            setErrorMessage(null);
           }, 5000);
         }
       }
     }
 
-    return removalHandler
+    return removalHandler;
   }
-  
+
   // Like Update Handler
   const likeUpdater = (blog) => {
     const updateHandler = async () => {
@@ -46,7 +46,7 @@ const BlogList = ({ blogs, setBlogs, setErrorMessage, user }) => {
         const updatedBlogs = blogs
           .map(matchingBlogs)
           .sort(byLikes);
-        
+
         setBlogs(updatedBlogs);
       } catch (exception) {
         // Update Failed
@@ -56,10 +56,10 @@ const BlogList = ({ blogs, setBlogs, setErrorMessage, user }) => {
         }, 5000);
       }
     }
-    
+
     return updateHandler;
   };
-  
+
   return (
     <div>
       <h2>Blogs</h2>
@@ -76,27 +76,27 @@ const BlogEntry = ({ blog, updateHandler, removalHandler, user }) => {
   const toggleVisibility = () => {
     setVisible(!visible);
   };
-  
+
   return (
     <div className="blogStyle">
       {blog.title} - {blog.author}
       <button onClick={toggleVisibility}>{toggleLabel}</button>
       {visible === true && <BlogInfoCard blog={blog} updateHandler={updateHandler} removalHandler={removalHandler} user={user} />}
     </div>
-  ) 
+  );
 };
 
 const BlogInfoCard = ({ blog, updateHandler, removalHandler, user }) => (
-    <div>
-      {blog.url}
-      <br></br>
-      Likes {blog.likes}
-      <button onClick={updateHandler}>Like</button>
-      <br></br>
-      {blog.user.name}
-      <br></br>
-      {(blog.user.username === user.username) && <button onClick={removalHandler}>Remove</button>}
-    </div>
+  <div>
+    {blog.url}
+    <br></br>
+    Likes {blog.likes}
+    <button onClick={updateHandler}>Like</button>
+    <br></br>
+    {blog.user.name}
+    <br></br>
+    {(blog.user.username === user.username) && <button onClick={removalHandler}>Remove</button>}
+  </div>
 );
 
 export default BlogList;
