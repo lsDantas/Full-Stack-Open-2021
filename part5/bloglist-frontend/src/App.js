@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './index.css'
 
 // Components
-import Togglable from './components/Toggable';
+import Togglable from './components/Togglable';
 import Notification from './components/Notification';
 import BlogList from './components/BlogList';
 import CreateBlogForm from './components/CreateBlogForm'
