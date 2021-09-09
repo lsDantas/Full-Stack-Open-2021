@@ -14,11 +14,11 @@ const BlogList = ({ blogs, setBlogs, setErrorMessage }) => {
       try {
         // Update blogs in Server
         const updatedBlog = await blogService.update(newBlog);
-
+        
         // Update Blogs Locally
         const matchingBlogs = (blog) => (blog.id === updatedBlog.id) ? updatedBlog : blog;
         const updatedBlogs = blogs.map(matchingBlogs);
-        
+
         setBlogs(updatedBlogs);
       } catch (exception) {
         // Update Failed
