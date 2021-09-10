@@ -63,7 +63,7 @@ const BlogList = ({ blogs, setBlogs, setErrorMessage, user }) => {
   };
 
   return (
-    <div>
+    <div id="blog-list">
       <h2>Blogs</h2>
       {blogs.map((blog) => <BlogEntry key={blog.id} blog={blog} updateHandler={likeUpdater(blog)} removalHandler={blogRemover(blog)} user={user} />)}
     </div>

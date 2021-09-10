@@ -18,7 +18,7 @@ describe('Blog app', function() {
         password: '123456'
       };
 
-      cy.request('POST', 'http://localhost:3003/api/users', user);
+      cy.createUser(user);
     });
 
     it('Succeeds with the correct credentials', function() {
@@ -36,6 +36,39 @@ describe('Blog app', function() {
 
       cy.get('#failure-notification').should('have.css', 'color', 'rgb(255, 0, 0)')
       cy.should('not.contain' ,'Test Dummy logged-in');
+    });
+  });
+
+  describe('When logged in...', function() {
+    beforeEach(function() {
+      // Create User
+      const user = {
+        name: 'Test Dummy',
+        username: 'dummy',
+        password: '123456'
+      };
+
+      cy.createUser(user);
+      cy.login({ username: user.username, password: user.password });
+    });
+
+    it('a blog can be created.', function () {
+      const blog = {
+        title: 'Lorem Ipsum',
+        author: 'No One',
+        url: 'http:www.example.com',
+      };
+
+      cy.get('#create-blog-toggle-button').click();
+
+      cy.get('#create-blog-title').type(blog.title);
+      cy.get('#create-blog-author').type(blog.author);
+      cy.get('#create-blog-url').type(blog.url);
+      cy.get('#create-blog-button').click()
+
+      cy.get('#success-notification').should('have.css', 'color', 'rgb(0, 128, 0)')
+      cy.should('not.contain', 'create-blog-form');
+      cy.get('#blog-list').should('contain', blog.title);
     });
   });
 

@@ -51,20 +51,21 @@ const CreateBlogForm = ({
   };
 
   return (
-    <form onSubmit={handleCreateBlog}>
+    <form id="create-blog-form" onSubmit={handleCreateBlog}>
       <h2>Create New Blog</h2>
-      <FieldEntry name="Title" value={title} changeHandler={setTitle} />
-      <FieldEntry name="Author" value={author} changeHandler={setAuthor} />
-      <FieldEntry name="URL" value={url} changeHandler={setUrl} />
-      <button className="createButton" type="submit">Create</button>
+      <FieldEntry id="create-blog-title" name="Title" value={title} changeHandler={setTitle} />
+      <FieldEntry id="create-blog-author" name="Author" value={author} changeHandler={setAuthor} />
+      <FieldEntry id="create-blog-url" name="URL" value={url} changeHandler={setUrl} />
+      <button id="create-blog-button" className="createButton" type="submit">Create</button>
     </form>
   );
 };
 
-const FieldEntry = ({ name, value, changeHandler }) => (
+const FieldEntry = ({ id, name, value, changeHandler }) => (
   <div>
     {name}
     <input
+      id={id}
       className={name}
       type="text"
       value={value}
