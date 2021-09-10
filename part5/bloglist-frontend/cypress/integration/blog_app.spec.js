@@ -43,16 +43,27 @@ describe('Blog app', function() {
     beforeEach(function() {
       // Create User
       const user = {
-        name: 'Test Dummy',
+        name: 'Test Dummy 2',
         username: 'dummy',
-        password: '123456'
+        password: '123456',
       };
 
-      cy.createUser(user);
-      cy.login({ username: user.username, password: user.password });
+      const blog = {
+        title: 'Full Stack Open',
+        author: 'Various authors',
+        url: 'https://fullstackopen.com',
+      };
+
+      cy.createUser(user)
+        .then( () => {
+          cy.login({ username: user.username, password: user.password });
+        })
+        .then( () => {
+          cy.createBlog(blog);
+        })
     });
 
-    it('a blog can be created.', function () {
+    it('a blog can be created.', function() {
       const blog = {
         title: 'Lorem Ipsum',
         author: 'No One',
@@ -69,6 +80,13 @@ describe('Blog app', function() {
       cy.get('#success-notification').should('have.css', 'color', 'rgb(0, 128, 0)')
       cy.should('not.contain', 'create-blog-form');
       cy.get('#blog-list').should('contain', blog.title);
+    });
+
+    it('a user can like a blog', function () {
+      cy.get('#blog-list').find('button').click();
+      cy.contains('Like').click();
+
+      cy.contains('Likes').parent().should('contain', 'Likes 1');
     });
   });
 

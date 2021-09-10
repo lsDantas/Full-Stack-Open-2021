@@ -14,7 +14,7 @@ const BlogEntry = ({ blog, updateHandler, removalHandler, user }) => {
   return (
     <div className="blogStyle">
       {blog.title} - {blog.author}
-      <button onClick={toggleVisibility}>{toggleLabel}</button>
+      <button id={`show-button-${blog.id}`}onClick={toggleVisibility}>{toggleLabel}</button>
       {visible === true && <BlogInfoCard blog={blog} updateHandler={updateHandler} removalHandler={removalHandler} user={user} />}
     </div>
   );
