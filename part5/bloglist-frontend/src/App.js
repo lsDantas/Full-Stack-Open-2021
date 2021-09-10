@@ -87,6 +87,7 @@ const App = () => {
       <div>
         Username
         <input
+          id="login-username"
           type="text"
           value={username}
           name="Username"
@@ -96,13 +97,14 @@ const App = () => {
       <div>
         Password
         <input
+          id="login-password"
           type="password"
           value={password}
           name="Password"
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button type="submit">Login</button>
+      <button id='login-button' type="submit">Login</button>
     </form>
   );
 
@@ -129,8 +131,8 @@ const App = () => {
 
   return (
     <div>
-      {successMessage !== null && <Notification message={successMessage} notificationStyle="successNotification" />}
-      {errorMessage !== null && <Notification message={errorMessage} notificationStyle="failureNotification"/>}
+      {successMessage !== null && <Notification id="success-notification" message={successMessage} notificationStyle="successNotification" />}
+      {errorMessage !== null && <Notification id="failure-notification" message={errorMessage} notificationStyle="failureNotification"/>}
       { user === null
         ? loginForm()
         : loggedInInterface()
