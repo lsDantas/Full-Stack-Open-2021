@@ -88,6 +88,15 @@ describe('Blog app', function() {
 
       cy.contains('Likes').parent().should('contain', 'Likes 1');
     });
+
+    it('a user who created a blog can delete it', function() {
+      cy.get('#blog-list').find('button').click();
+      cy.contains('Like').parent().find('button:last').click();
+
+      cy.on('window:confirm', (str) => expect(str).to.eq('Are you sure you want to delete Full Stack Open by Various authors?'));
+
+      cy.should('not.contain', 'Full Stack Open');
+    })
   });
 
 });
