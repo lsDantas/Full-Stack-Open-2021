@@ -12,20 +12,20 @@ const BlogEntry = ({ blog, updateHandler, removalHandler, user }) => {
   };
 
   return (
-    <div className="blogStyle">
+    <div id={`blog-entry-${blog.id}`} className="blogStyle">
       {blog.title} - {blog.author}
-      <button id={`show-button-${blog.id}`}onClick={toggleVisibility}>{toggleLabel}</button>
+      <button id={`show-button-${blog.id}`} className="showBlogButton" onClick={toggleVisibility}>{toggleLabel}</button>
       {visible === true && <BlogInfoCard blog={blog} updateHandler={updateHandler} removalHandler={removalHandler} user={user} />}
     </div>
   );
 };
 
 const BlogInfoCard = ({ blog, updateHandler, removalHandler, user }) => (
-  <div>
+  <div className="blogInfoCard">
     {blog.url}
     <br></br>
-    Likes {blog.likes}
-    <button onClick={updateHandler}>Like</button>
+    Likes <div className='likes'>{blog.likes}</div>
+    <button className="likeButton" onClick={updateHandler}>Like</button>
     <br></br>
     {blog.user.name}
     <br></br>
