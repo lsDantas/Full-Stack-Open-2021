@@ -16,10 +16,7 @@ const AnecdotesList = () => {
     dispatch(voteAnecdote(anecdote));
 
     // Display Notification
-    dispatch(setNotification(`You vote '${anecdote.content}'.`));
-    setTimeout(() => {
-      dispatch(removeNotification());
-    }, 5000);
+    dispatch(setNotification(`You vote '${anecdote.content}'.`, 5000));
   };
 
   const byLikes = (anec1, anec2) => anec2.votes - anec1.votes;

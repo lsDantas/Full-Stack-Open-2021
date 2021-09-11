@@ -14,10 +14,7 @@ const AnecdoteForm = () => {
     dispatch(createAnecdote(content));
 
     // Display Notification
-    dispatch(setNotification(`You created '${content}'.`));
-    setTimeout(() => {
-      dispatch(removeNotification());
-    }, 5000);
+    dispatch(setNotification(`You created '${content}'.`, 5000));
   }
 
   return (
