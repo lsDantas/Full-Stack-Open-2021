@@ -5,7 +5,11 @@ import { setNotification, removeNotification } from '../reducers/notificationRed
 
 const AnecdotesList = () => {
 
-  const anecdotes = useSelector(state => state.anecdotes);
+  const anecdotes = useSelector(state => {
+    const matchesSearchTerm = (anecdote) => anecdote.content.includes(state.filter);
+    const selectedAnecdotes = state.anecdotes.filter(matchesSearchTerm);
+    return selectedAnecdotes;
+  });
   const dispatch = useDispatch();
 
   const vote = (anecdote) => {
