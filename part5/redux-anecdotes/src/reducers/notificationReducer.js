@@ -1,18 +1,24 @@
-const initialNotification = 'Hello world!';
-
-const notificationReducer = (state = initialNotification, action) => {
+const notificationReducer = (state = null, action) => {
   switch (action.type) {
-  case 'NEW_NOTIFICATION':
+  case 'SET_NOTIFICATION':
     return action.data;
+  case 'REMOVE_NOTIFICATION':
+    return null;
   default:
     return state;
   }
 };
 
-export const newNotification = (notification) => {
+export const setNotification = (notification) => {
   return {
-    type: 'NEW_NOTIFICATION',
+    type: 'SET_NOTIFICATION',
     data: notification,
+  };
+};
+
+export const removeNotification = () => {
+  return {
+    type: 'REMOVE_NOTIFICATION',
   };
 };
 
