@@ -13,7 +13,7 @@ const AnecdotesList = () => {
   });
 
   const vote = (anecdote) => {
-    dispatch(voteAnecdote(anecdote.id));
+    dispatch(voteAnecdote(anecdote));
 
     // Display Notification
     dispatch(setNotification(`You vote '${anecdote.content}'.`));
@@ -22,10 +22,12 @@ const AnecdotesList = () => {
     }, 5000);
   };
 
+  const byLikes = (anec1, anec2) => anec2.votes - anec1.votes;
+
   return (
     <div>
       {
-        anecdotes.map(anecdote =>
+        anecdotes.sort(byLikes).map(anecdote =>
           <div key={anecdote.id}>
             <div>
               {anecdote.content}

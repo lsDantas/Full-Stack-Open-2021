@@ -8,7 +8,6 @@ import AnecdoteForm from './components/AnecdoteForm';
 import AnecdotesList from './components/AnecdotesList';
 
 // Services
-import anecdoteService from './services/anecdotes';
 import { initializeAnecdotes } from './reducers/anecdoteReducer';
 
 const App = () => {
