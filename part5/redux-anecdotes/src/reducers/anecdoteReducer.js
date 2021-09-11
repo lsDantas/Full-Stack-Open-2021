@@ -36,6 +36,9 @@ const reducer = (state = initialState, action) => {
 
     return state.map(replaceChangedEntry);
   }
+  case 'NEW_ANECDOTE': {
+    return [...state, action.data];
+  }
   default:
     return state;
   }
@@ -46,6 +49,13 @@ export const voteAnecdote = (id) => {
     type: 'VOTE',
     data: { id },
   };
+};
+
+export const createAnecdote = (anecdote) => {
+  return {
+    type: 'NEW_ANECDOTE',
+    data: asObject(anecdote),
+  }
 };
 
 export default reducer;
