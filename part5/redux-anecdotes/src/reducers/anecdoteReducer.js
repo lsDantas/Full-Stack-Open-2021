@@ -33,8 +33,9 @@ const reducer = (state = initialState, action) => {
     };
 
     const replaceChangedEntry = (anecdote) => anecdote.id === id ? changedAnecdote : anecdote;
+    const byLikes = (anec1, anec2) => anec2.votes - anec1.votes;
 
-    return state.map(replaceChangedEntry);
+    return state.map(replaceChangedEntry).sort(byLikes);
   }
   case 'NEW_ANECDOTE': {
     return [...state, action.data];
