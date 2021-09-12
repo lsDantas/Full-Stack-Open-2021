@@ -45,7 +45,7 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, []);
-  const a = 2;
+
   // Forms
   const handleLogin = async (event) => {
     event.preventDefault();
