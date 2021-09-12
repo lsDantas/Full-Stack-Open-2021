@@ -1,4 +1,8 @@
 import React, { useState } from 'react';
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link, useParams
+} from 'react-router-dom';
 
 const Menu = () => {
   const padding = {
@@ -6,18 +10,38 @@ const Menu = () => {
   };
   return (
     <div>
-      <a href='#' style={padding}>anecdotes</a>
-      <a href='#' style={padding}>create new</a>
-      <a href='#' style={padding}>about</a>
+      <Link to='/' style={padding}>anecdotes</Link>
+      <Link to='/create-new' style={padding}>create new</Link>
+      <Link to='/about' style={padding}>about</Link>
     </div>
   );
 };
+
+const Anecdote = ({ anecdotes }) => {
+  const id = useParams().id;
+  const anecdote = anecdotes.find((entry) => entry.id === id);
+
+  return (
+    <div>
+      <br></br>
+      <h2 key={anecdote.id}> {anecdote.content} by {anecdote.author}</h2>
+      has {anecdote.votes} votes
+      <br></br>
+      for more info see <a href={anecdote.info}>{anecdote.info}</a>
+      <br></br>
+      <br></br>
+    </div>
+  );
+}
 
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote =>
+        <li key={anecdote.id}>
+          <Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>)}
     </ul>
   </div>
 );
@@ -123,14 +147,27 @@ const App = () => {
   };
 
   return (
-    <div>
-      <h1>Software anecdotes</h1>
-      <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
-      <Footer />
-    </div>
+    <Router>
+      <div>
+        <h1>Software anecdotes</h1>
+        <Menu />
+        <Switch>
+          <Route path='/anecdotes/:id'>
+            <Anecdote anecdotes={anecdotes}/>
+          </Route>
+          <Route path='/about'>
+            <About />
+          </Route>
+          <Route path='/create-new'>
+            <CreateNew addNew={addNew} />
+          </Route>
+          <Route path='/'>
+            <AnecdoteList anecdotes={anecdotes} />
+          </Route>
+        </Switch>
+        <Footer />
+      </div>
+    </Router>
   )
 };
 
