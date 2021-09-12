@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 
 // Components
 import Notification from './components/Notification';
@@ -10,18 +10,15 @@ import AnecdotesList from './components/AnecdotesList';
 // Services
 import { initializeAnecdotes } from './reducers/anecdoteReducer';
 
-const App = () => {
-  const notification = useSelector(state => state.notification);
-
-  const dispatch = useDispatch();
+const App = (props) => {
   useEffect(() => {
-    dispatch(initializeAnecdotes());
-  }, [dispatch]);
+    props.initializeAnecdotes();
+  }, []);
 
   return (
     <div>
       <h2>Anecdotes</h2>
-      {notification && <Notification />}
+      {props.notification.text && <Notification />}
       <Filter />
       <AnecdotesList />
       <AnecdoteForm />
@@ -29,4 +26,14 @@ const App = () => {
   );
 };
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    notification: state.notification,
+  }
+}
+
+const mapDispatchToProps = {
+  initializeAnecdotes,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
