@@ -5,8 +5,9 @@ import './index.css';
 // Components
 import Togglable from './components/Togglable';
 import Notification from './components/Notification';
-import BlogList from './components/BlogList';
+import LoginForm from './components/LoginForm';
 import CreateBlogForm from './components/CreateBlogForm';
+import BlogList from './components/blogs-view/BlogList';
 
 // Reducers
 import { initializeBlogs } from './reducers/blogsReducer';
@@ -31,55 +32,11 @@ const App = (props) => {
     }
   }, []);
 
-  // Forms
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      // Login with Credentials
-      const credentials = {
-        username: event.target.username.value,
-        password: event.target.password.value
-      };
-
-      props.login(credentials);
-
-      // Clear Form
-      event.target.username.value = '';
-      event.target.password.value = '';
-    } catch (exception) {
-      // Invalid Credentials
-      props.setFailureNotif('Wrong credentials.', 5000);
-    }
-  };
-
   const handleLogout = (event) => {
     event.preventDefault();
 
     props.logout();
   };
-
-  const loginForm = () => (
-    <form id="login-form" onSubmit={handleLogin}>
-      <h2>Log in to the Application</h2>
-      <div>
-        Username
-        <input
-          id="login-username"
-          type="text"
-          name="username"
-        />
-      </div>
-      <div>
-        Password
-        <input
-          id="login-password"
-          type="password"
-          name="password"
-        />
-      </div>
-      <button id='login-button' type="submit">Login</button>
-    </form>
-  );
 
   const loggedInInterface = () => (
     <div>
@@ -100,10 +57,10 @@ const App = (props) => {
 
   return (
     <div>
-      {props.successMessage !== null && <Notification id="success-notification" message={props.successMessage} notificationStyle="successNotification" />}
-      {props.failureMessage !== null && <Notification id="failure-notification" message={props.failureMessage} notificationStyle="failureNotification"/>}
+      {props.successMessage !== null && <Notification class="successNotification" id="success-notification" message={props.successMessage} notificationStyle="successNotification" />}
+      {props.failureMessage !== null && <Notification class="failureNotification" id="failure-notification" message={props.failureMessage} notificationStyle="failureNotification"/>}
       { props.user === null
-        ? loginForm()
+        ? <LoginForm />
         : loggedInInterface()
       }
     </div>
@@ -125,6 +82,6 @@ const mapDispatchToProps = {
   setFailureNotif,
   login,
   logout,
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

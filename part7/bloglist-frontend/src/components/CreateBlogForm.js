@@ -15,7 +15,7 @@ const CreateBlogForm = (props) => {
       url: event.target.urlText.value,
     };
     try {
-      props.createBlog(blog);
+      await props.createBlog(blog);
 
       props.createBlogFormRef.current.toggleVisibility();
       props.setSuccessNotif(`Added ${blog.title} by ${blog.author}!`);

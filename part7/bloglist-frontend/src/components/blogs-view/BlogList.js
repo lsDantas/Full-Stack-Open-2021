@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import '../index.css';
+import '../../index.css';
 
 import BlogEntry from './BlogEntry';
 

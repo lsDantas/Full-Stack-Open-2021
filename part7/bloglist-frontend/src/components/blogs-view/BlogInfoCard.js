@@ -1,25 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import { likeBlog, removeBlog } from '../reducers/blogsReducer';
+import { likeBlog, removeBlog } from '../../reducers/blogsReducer';
 
 const BlogInfoCard = (props) => {
 
-  const handleLikeBlog = () => {
+  const handleLikeBlog = async () => {
     try {
-      props.likeBlog(props.blog)
+      await props.likeBlog(props.blog)
     } catch (exception) {
       props.setFailureNotif('Unable to update likes.');
     }
   };
 
-  const handleRemoveBlog = () => {
+  const handleRemoveBlog = async () => {
     // Get user confirmation
     const userApproval = window.confirm(`Are you sure you want to delete ${props.blog.title} by ${props.blog.author}?`);
 
     if (userApproval) {
       try {
-        props.removeBlog(props.blog);
+        await props.removeBlog(props.blog);
       } catch (exception) {
         props.setFailureNotif('Unable to delete blog.');
       }
