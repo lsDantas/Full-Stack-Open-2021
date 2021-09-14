@@ -5,9 +5,12 @@ import {
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 
+// Components
 import BlogsView from './blogs-view/BlogsView';
+import SingleBlogView from './blogs-view/SingleBlogView';
 import UsersView from './users-view/UsersView';
 
+// Reducers
 import { logout } from '../reducers/userReducer';
 import SingleUserView from './users-view/SingleUserView';
 
@@ -27,6 +30,9 @@ const LoggedInterface = (props) => {
           <button type="submit">Logout</button>
         </form>
         <Switch>
+          <Route path="/blogs/:id">
+            <SingleBlogView />
+          </Route>
           <Route path="/users/:id">
             <SingleUserView />
           </Route>

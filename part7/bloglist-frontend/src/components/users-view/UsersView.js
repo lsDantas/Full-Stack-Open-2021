@@ -1,9 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  BrowserRouter as Router,
-  Link, useRouteMatch
-} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const UsersView = (props) => {
   const authorsCount = (counts, blog) => {

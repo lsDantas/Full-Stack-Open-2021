@@ -29,7 +29,7 @@ const BlogInfoCard = (props) => {
 
   return (
     <div className="blogInfoCard">
-      {props.blog.url}
+      <a href={props.blog.url}>{props.blog.url}</a>
       <br></br>
       Likes <div className='likes'>{props.blog.likes}</div>
       <button className="likeButton" onClick={handleLikeBlog}>Like</button>
