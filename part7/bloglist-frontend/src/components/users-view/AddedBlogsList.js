@@ -4,7 +4,7 @@ import React from 'react';
 import { ListGroup } from 'react-bootstrap'
 
 const AddedBlogsList = (props) => (
-  <div>
+  <div id="added-blog-list">
     <h2>{props.blogs[0].user.name}</h2>
     <h3>Added Blogs</h3>
     <ListGroup>

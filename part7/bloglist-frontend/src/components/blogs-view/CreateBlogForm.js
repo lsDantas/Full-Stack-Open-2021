@@ -40,15 +40,15 @@ const CreateBlogForm = (props) => {
       <h2>Create New Blog</h2>
       <Form.Group>
         <Form.Label>Title</Form.Label>
-        <Form.Control name="titleText" type="text" placeholder="Enter title" />
+        <Form.Control id="create-blog-title" name="titleText" type="text" placeholder="Enter title" />
       </Form.Group>
       <Form.Group>
         <Form.Label>Author</Form.Label>
-        <Form.Control name="authorText" type="text" placeholder="Enter author" />
+        <Form.Control id="create-blog-author" name="authorText" type="text" placeholder="Enter author" />
       </Form.Group>
       <Form.Group>
         <Form.Label>URL</Form.Label>
-        <Form.Control name="urlText" type="text" placeholder="Enter URL" />
+        <Form.Control id="create-blog-url" name="urlText" type="text" placeholder="Enter URL" />
       </Form.Group>
       <Button id="create-blog-button" className="createButton" type="submit">Create</Button>
     </Form>

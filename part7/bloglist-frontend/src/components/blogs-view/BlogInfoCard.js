@@ -41,7 +41,7 @@ const BlogInfoCard = (props) => {
       <br></br>
       User: {props.blog.user.name}
       <br></br>
-      {(props.blog.user.username === props.user.username) && <Button onClick={handleRemoveBlog}>Remove Blog</Button>}
+      {(props.blog.user.username === props.user.username) && <Button id="remove-blog-button" onClick={handleRemoveBlog}>Remove Blog</Button>}
       <CommentList blog={props.blog} />
     </div>
   );

@@ -18,6 +18,7 @@ const CommentList = (props) => {
       const newComment = formDataObj.commentText;
       await props.addComment(props.blog, newComment);
 
+      props.setSuccessNotif('Added comment!');
       event.target.commentText.value = '';
     } catch (exception) {
       console.log(exception);
@@ -40,7 +41,7 @@ const CommentList = (props) => {
       {
         (props.blog.comments.length === 0)
           ? <b>No comments yet.</b>
-          : <ListGroup>
+          : <ListGroup name="comment-list">
             {props.blog.comments.map((comment, index) =>
               <ListGroup.Item key={`comment-${index}`}>
                 {comment}

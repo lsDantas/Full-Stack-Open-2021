@@ -34,7 +34,7 @@ describe('Blog app', function() {
       cy.get('#login-password').type('wrongpassword');
       cy.get('#login-button').click();
 
-      cy.get('#failure-notification').should('have.css', 'color', 'rgb(255, 0, 0)')
+      cy.get('.alert-danger').should('have.css', 'color', 'rgb(114, 28, 36)')
       cy.should('not.contain' ,'Test Dummy logged-in');
     });
   });
@@ -73,30 +73,51 @@ describe('Blog app', function() {
 
       cy.get('#create-blog-toggle-button').click();
 
-      cy.get('#create-blog-title').type(blog.title);
-      cy.get('#create-blog-author').type(blog.author);
-      cy.get('#create-blog-url').type(blog.url);
+      cy.get('[name=titleText]').type(blog.title);
+      cy.get('[name=authorText]').type(blog.author);
+      cy.get('[name=urlText]').type(blog.url);
       cy.get('#create-blog-button').click()
 
-      cy.get('#success-notification').should('have.css', 'color', 'rgb(0, 128, 0)')
+      cy.get('.alert-success').should('have.css', 'color', 'rgb(21, 87, 36)')
       cy.should('not.contain', 'create-blog-form');
       cy.get('#blog-list').should('contain', blog.title);
     });
 
     it('a user can like a blog.', function () {
-      cy.get('#blog-list').find('button').click();
-      cy.contains('Like').click();
+      cy.contains('Full Stack Open - Various authors').click();
 
       cy.contains('Likes').parent().should('contain', 'Likes 1');
     });
 
+    it('a user can add a comment to a blog', function() {
+      const commentText = 'TestOpinion'
+      cy.contains('Full Stack Open - Various authors').click();
+
+      cy.get('input[name=commentText').type(commentText);
+      cy.get('#add-comment-button').click();
+
+      cy.get('.alert-success').should('have.css', 'color', 'rgb(21, 87, 36)')
+      cy.get('.list-group-item').should('contain', commentText);
+    });
+
     it('a user who created a blog can delete it.', function() {
-      cy.get('#blog-list').find('button').click();
-      cy.contains('Like').parent().find('button:last').click();
+      cy.contains('Full Stack Open - Various authors').click();
+      cy.get('#remove-blog-button').click();
 
       cy.on('window:confirm', (str) => expect(str).to.eq('Are you sure you want to delete Full Stack Open by Various authors?'));
 
       cy.should('not.contain', 'Full Stack Open');
+    });
+
+    it('users can be viewed in a list.', function() {
+      cy.get('a').contains('Users').click();
+      cy.get('td').should('contain', 'Test Dummy 2');
+    });
+
+    it('individual user pages can be accessed.', function () {
+      cy.get('a').contains('Users').click();
+      cy.get('td a').click();
+      cy.get('#added-blog-list').should('contain', 'Added Blogs');
     });
 
     it('blogs are ordered by likes.', function() {
@@ -128,12 +149,16 @@ describe('Blog app', function() {
         })
         .then( () => {
           // Check for Titles in Right Order
-          cy.get('.showBlogButton').eq(0).click();
-          cy.get('.showBlogButton').eq(1).click();
-          cy.get('.showBlogButton').eq(2).click();
-          cy.get('.likes').eq(0).should('contain', initialBlogs[1].likes);
-          cy.get('.likes').eq(1).should('contain', initialBlogs[2].likes);
-          cy.get('.likes').eq(2).should('contain', initialBlogs[0].likes);
+          cy.get('td a').eq(0).click();
+          cy.get('.likes').should('contain', initialBlogs[1].likes);
+          cy.visit('http://localhost:3000');
+
+          cy.get('td a').eq(1).click();
+          cy.get('.likes').should('contain', initialBlogs[2].likes);
+          cy.visit('http://localhost:3000');
+
+          cy.get('td a').eq(2).click();
+          cy.get('.likes').should('contain', initialBlogs[0].likes);
         });
     });
   });
