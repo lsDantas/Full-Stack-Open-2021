@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import CommentList from './CommentList';
+
 import { setFailureNotif } from '../../reducers/failureNotifReducer';
 import { likeBlog, removeBlog } from '../../reducers/blogsReducer';
 
@@ -37,6 +39,7 @@ const BlogInfoCard = (props) => {
       {props.blog.user.name}
       <br></br>
       {(props.blog.user.username === props.user.username) && <button onClick={handleRemoveBlog}>Remove</button>}
+      <CommentList blog={props.blog} />
     </div>
   );
 };

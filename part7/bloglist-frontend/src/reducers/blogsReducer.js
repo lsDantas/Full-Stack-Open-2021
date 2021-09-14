@@ -25,6 +25,12 @@ const blogReducer = (state = [], action) => {
 
     return updatedBlogs;
   }
+  case 'ADD_COMMENT': {
+    const updatedBlog = action.data;
+    const matchingBlogs = (blog) => (blog.id === updatedBlog.id) ? updatedBlog : blog;
+
+    return state.map(matchingBlogs);
+  }
   default:
     return state;
   }
@@ -63,6 +69,22 @@ export const likeBlog = (blog) => {
       data: updatedBlog,
     });
   };
+};
+
+export const addComment = (blog, comment) => {
+  return async dispatch => {
+    const changedBlog = {
+      id: blog.id,
+      comments: blog.comments.concat(comment),
+    };
+
+    const updatedBlog = await blogService.update(changedBlog);
+
+    dispatch({
+      type: 'ADD_COMMENT',
+      data: updatedBlog,
+    });
+  }
 };
 
 export const removeBlog = (blog) => {

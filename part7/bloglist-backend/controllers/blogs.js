@@ -20,6 +20,7 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
                 author: body.author,
                 url: body.url,
                 likes: (body.likes) ? body.likes : 0,
+                comments: [],
                 user: user._id,
             },
         );

@@ -1,5 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
+
+import FieldEntry from '../FieldEntry';
+
+// Reducers
 import { createBlog } from '../../reducers/blogsReducer';
 import { setSuccessNotif } from '../../reducers/successNotifReducer';
 import { setFailureNotif } from '../../reducers/failureNotifReducer';
@@ -19,6 +23,10 @@ const CreateBlogForm = (props) => {
 
       props.createBlogFormRef.current.toggleVisibility();
       props.setSuccessNotif(`Added ${blog.title} by ${blog.author}!`);
+
+      event.target.titleText.value = '';
+      event.target.authorText.value = '';
+      event.target.urlText.value = '';
     } catch (exception) {
       props.setFailureNotif('Unable to create blog.');
     }
@@ -34,18 +42,6 @@ const CreateBlogForm = (props) => {
     </form>
   );
 };
-
-const FieldEntry = ({ id, classRef, refName, }) => (
-  <div>
-    {classRef}
-    <input
-      id={id}
-      className={classRef}
-      type="text"
-      name={refName}
-    />
-  </div>
-);
 
 const mapDispatchToProps = {
   createBlog,
