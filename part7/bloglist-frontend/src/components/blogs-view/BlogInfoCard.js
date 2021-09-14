@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+import { setFailureNotif } from '../../reducers/failureNotifReducer';
 import { likeBlog, removeBlog } from '../../reducers/blogsReducer';
 
 const BlogInfoCard = (props) => {
@@ -49,6 +50,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = {
   likeBlog,
   removeBlog,
-}
+  setFailureNotif,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(BlogInfoCard);

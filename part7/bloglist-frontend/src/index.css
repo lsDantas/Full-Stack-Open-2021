@@ -12,7 +12,7 @@ code {
     monospace;
 }
 
-.successNotification {
+.success-notification {
   color: green;
   background: lightgrey;
   font-size: 20px;
@@ -22,7 +22,7 @@ code {
   margin-bottom: 10px;
 }
 
-.failureNotification {
+.failure-notification {
   color: red;
   background: lightgrey;
   font-size: 20px;

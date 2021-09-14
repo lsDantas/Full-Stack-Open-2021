@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { createBlog } from '../reducers/blogsReducer';
-import { setSuccessNotif } from '../reducers/successNotifReducer';
-import { setFailureNotif } from '../reducers/failureNotifReducer';
+import { createBlog } from '../../reducers/blogsReducer';
+import { setSuccessNotif } from '../../reducers/successNotifReducer';
+import { setFailureNotif } from '../../reducers/failureNotifReducer';
 
 const CreateBlogForm = (props) => {
 
