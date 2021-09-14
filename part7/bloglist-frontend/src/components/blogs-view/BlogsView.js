@@ -18,7 +18,6 @@ const BlogsView = () => {
           createBlogFormRef={createBlogFormRef}
         />
       </Togglable>
-      <br></br>
       <BlogList />
     </div>
   );

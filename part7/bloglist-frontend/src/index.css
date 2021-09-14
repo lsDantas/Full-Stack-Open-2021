@@ -39,3 +39,7 @@ code {
   border-width: 1px;
   margin-bottom: 5px;
 }
+
+#navbar {
+  background-color: lightgrey;
+}

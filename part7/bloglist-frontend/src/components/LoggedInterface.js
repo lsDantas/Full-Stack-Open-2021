@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   BrowserRouter as Router,
-  Switch, Route
+  Switch, Route, Link
 } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -25,10 +25,13 @@ const LoggedInterface = (props) => {
     <Router>
       <div>
         <h1>Blogs App</h1>
-        <form onSubmit={handleLogout}>
+        <form id="navbar" onSubmit={handleLogout}>
+          <Link to="/blogs/">Blogs</Link>&nbsp;
+          <Link to="/users/">Users</Link>&nbsp;
           {props.user.name} logged-in
           <button type="submit">Logout</button>
         </form>
+        <br></br>
         <Switch>
           <Route path="/blogs/:id">
             <SingleBlogView />
