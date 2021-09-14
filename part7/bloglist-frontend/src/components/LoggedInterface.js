@@ -14,7 +14,7 @@ const LoggedInterface = (props) => {
 
   return (
     <div>
-      <h1>Blogs</h1>
+      <h1>Blogs App</h1>
       <form onSubmit={handleLogout}>
         {props.user.name} logged-in
         <button type="submit">Logout</button>
