@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
   BrowserRouter as Router,
-  Link
+  Link, useRouteMatch
 } from 'react-router-dom';
 
 const UsersView = (props) => {
@@ -35,31 +35,29 @@ const UsersView = (props) => {
   };
 
   return (
-    <Router>
-      <div id="user-list">
-        <h2>User List</h2>
-        <table>
-          <tbody>
-            <tr>
-              <th>User</th>
-              <th>Blogs Created</th>
-            </tr>
-            {
-              authorsData.map(([ key, value ]) => {
-                return (
-                  <tr key={key}>
-                    <td style={centeredText}>
-                      <Link to={`/users/${value.id}`}>{value.name}</Link>
-                    </td>
-                    <td style={centeredText}>{value.count}</td>
-                  </tr>
-                );
-              })
-            }
-          </tbody>
-        </table>
-      </div>
-    </Router>
+    <div id="user-list">
+      <h2>User List</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th>User</th>
+            <th>Blogs Created</th>
+          </tr>
+          {
+            authorsData.map(([ key, value ]) => {
+              return (
+                <tr key={key}>
+                  <td style={centeredText}>
+                    <Link to={`/users/${value.id}`}>{value.name}</Link>
+                  </td>
+                  <td style={centeredText}>{value.count}</td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
   );
 };
 
