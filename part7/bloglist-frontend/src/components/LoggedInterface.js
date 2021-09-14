@@ -9,6 +9,7 @@ import BlogsView from './blogs-view/BlogsView';
 import UsersView from './users-view/UsersView';
 
 import { logout } from '../reducers/userReducer';
+import SingleUserView from './users-view/SingleUserView';
 
 const LoggedInterface = (props) => {
   const handleLogout = (event) => {
@@ -26,6 +27,9 @@ const LoggedInterface = (props) => {
           <button type="submit">Logout</button>
         </form>
         <Switch>
+          <Route path="/users/:id">
+            <SingleUserView />
+          </Route>
           <Route path="/users">
             <UsersView />
           </Route>
