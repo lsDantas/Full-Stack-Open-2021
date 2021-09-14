@@ -7,6 +7,7 @@ const failureNotifReducer = (state = { text: null, timeoutID: null }, action) =>
       timeoutID: action.data.timeoutID,
     };
   case 'REMOVE_FAIL_NOTIFICATION':
+    clearTimeout(state.timeoutID);
     return {
       text: null,
       timeoutID: null,
@@ -27,6 +28,12 @@ export const setFailureNotif = (notification, time=5000) => {
       data: { notification, timeoutID, },
     });
   }
+};
+
+export const clearFailureNotif = () => {
+  return async dispatch => {
+    dispatch({ type: 'REMOVE_FAIL_NOTIFICATION', });
+  };
 };
 
 export default failureNotifReducer;

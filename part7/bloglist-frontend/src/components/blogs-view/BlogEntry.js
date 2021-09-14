@@ -5,9 +5,9 @@ import '../../index.css';
 
 const BlogEntry = ({ blog }) => {
   return (
-    <div id={`blog-entry-${blog.id}`} className="blogStyle">
-      <Link to={`/blogs/${blog.id}`}> {blog.title} - {blog.author} </Link>
-    </div>
+    <tr id={`blog-entry-${blog.id}`} className="blogStyle">
+      <td><Link to={`/blogs/${blog.id}`}> {blog.title} - {blog.author} </Link></td>
+    </tr>
   );
 };
 

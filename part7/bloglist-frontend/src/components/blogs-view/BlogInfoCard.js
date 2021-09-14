@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+// Bootstrap
+import { Button } from 'react-bootstrap'
+
 import CommentList from './CommentList';
 
 import { setFailureNotif } from '../../reducers/failureNotifReducer';
@@ -31,14 +34,14 @@ const BlogInfoCard = (props) => {
 
   return (
     <div className="blogInfoCard">
-      <a href={props.blog.url}>{props.blog.url}</a>
+      URL: <a href={props.blog.url}>{props.blog.url}</a>
       <br></br>
-      Likes <div className='likes'>{props.blog.likes}</div>
-      <button className="likeButton" onClick={handleLikeBlog}>Like</button>
+      <div className='likes'>Likes {props.blog.likes}</div>
+      <Button className="likeButton" onClick={handleLikeBlog}>Like</Button>
       <br></br>
-      {props.blog.user.name}
+      User: {props.blog.user.name}
       <br></br>
-      {(props.blog.user.username === props.user.username) && <button onClick={handleRemoveBlog}>Remove</button>}
+      {(props.blog.user.username === props.user.username) && <Button onClick={handleRemoveBlog}>Remove Blog</Button>}
       <CommentList blog={props.blog} />
     </div>
   );

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+
 import './index.css';
 
 // Components
@@ -22,15 +23,15 @@ const App = (props) => {
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser');
 
-    if (loggedUserJSON) {
+    if (loggedUserJSON && props.user === null) {
       props.loadLoggedUser(loggedUserJSON);
     }
   }, []);
 
   return (
-    <div>
-      {props.successMessage !== null && <Notification class="success-notification" id="success-notification" message={props.successMessage} notificationStyle="successNotification" />}
-      {props.failureMessage !== null && <Notification class="failure-notification" id="failure-notification" message={props.failureMessage} notificationStyle="failureNotification"/>}
+    <div className="container">
+      {props.successMessage !== null && <Notification variant="success" class="success-notification" id="success-notification" message={props.successMessage} notificationStyle="successNotification" />}
+      {props.failureMessage !== null && <Notification variant="danger"  class="failure-notification" id="failure-notification" message={props.failureMessage} notificationStyle="failureNotification"/>}
       { props.user === null
         ? <LoginForm />
         : <LoggedInterface />
@@ -44,6 +45,7 @@ const mapStateToProps = (state) => {
     successMessage: state.successNotif.text,
     failureMessage: state.failureNotif.text,
     user: state.user,
+    blogs: state.blogs,
   };
 };
 

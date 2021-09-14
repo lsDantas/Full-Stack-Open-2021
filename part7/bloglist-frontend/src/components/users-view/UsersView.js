@@ -2,6 +2,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+// Bootstrap
+import { Table } from 'react-bootstrap'
+
 const UsersView = (props) => {
   const authorsCount = (counts, blog) => {
     const authorCount = counts[blog.user.username];
@@ -34,11 +37,11 @@ const UsersView = (props) => {
   return (
     <div id="user-list">
       <h2>User List</h2>
-      <table>
+      <Table striped>
         <tbody>
           <tr>
-            <th>User</th>
-            <th>Blogs Created</th>
+            <th style={centeredText}>User</th>
+            <th style={centeredText}>Blogs Created</th>
           </tr>
           {
             authorsData.map(([ key, value ]) => {
@@ -53,7 +56,7 @@ const UsersView = (props) => {
             })
           }
         </tbody>
-      </table>
+      </Table>
     </div>
   );
 };

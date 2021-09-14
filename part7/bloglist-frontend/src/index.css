@@ -11,35 +11,3 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-
-.success-notification {
-  color: green;
-  background: lightgrey;
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.failure-notification {
-  color: red;
-  background: lightgrey;
-  font-size: 20px;
-  border-style: solid;
-  border-radius: 5px;
-  padding: 10px;
-  margin-bottom: 10px;
-}
-
-.blogStyle {
-  padding-top: 10px;
-  padding-left: 2px;
-  border: solid;
-  border-width: 1px;
-  margin-bottom: 5px;
-}
-
-#navbar {
-  background-color: lightgrey;
-}

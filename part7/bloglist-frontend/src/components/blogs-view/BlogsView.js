@@ -17,7 +17,9 @@ const BlogsView = () => {
         <CreateBlogForm
           createBlogFormRef={createBlogFormRef}
         />
+        <br></br>
       </Togglable>
+      <br></br>
       <BlogList />
     </div>
   );

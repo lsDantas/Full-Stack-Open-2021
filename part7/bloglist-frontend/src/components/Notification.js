@@ -1,10 +1,13 @@
 import React from 'react';
 
+// Bootstrap
+import { Alert } from 'react-bootstrap'
+
 const Notification = (props) => {
   return (
-    <div className={props.class} id={props.id}>
+    <Alert variant={props.variant} className={props.class} id={props.id}>
       {props.message}
-    </div>
+    </Alert>
   );
 };
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import FieldEntry from '../FieldEntry';
+// Bootstrap
+import { Button, Form } from 'react-bootstrap';
 
 // Reducers
 import { createBlog } from '../../reducers/blogsReducer';
@@ -9,15 +10,17 @@ import { setSuccessNotif } from '../../reducers/successNotifReducer';
 import { setFailureNotif } from '../../reducers/failureNotifReducer';
 
 const CreateBlogForm = (props) => {
-
   const handleCreateBlog = async (event) => {
     event.preventDefault();
+    const formData = new FormData(event.target);
+    const formDataObj = Object.fromEntries(formData.entries());
 
     const blog = {
-      title: event.target.titleText.value,
-      author: event.target.authorText.value,
-      url: event.target.urlText.value,
+      title: formDataObj.titleText,
+      author: formDataObj.authorText,
+      url: formDataObj.urlText,
     };
+
     try {
       await props.createBlog(blog);
 
@@ -33,13 +36,22 @@ const CreateBlogForm = (props) => {
   };
 
   return (
-    <form id="create-blog-form" onSubmit={handleCreateBlog}>
+    <Form id="create-blog-form" onSubmit={handleCreateBlog}>
       <h2>Create New Blog</h2>
-      <FieldEntry id="create-blog-title" classRef="Title" refName="titleText" />
-      <FieldEntry id="create-blog-author" classRef="Author" refName="authorText" />
-      <FieldEntry id="create-blog-url" classRef="URL" refName="urlText" />
-      <button id="create-blog-button" className="createButton" type="submit">Create</button>
-    </form>
+      <Form.Group>
+        <Form.Label>Title</Form.Label>
+        <Form.Control name="titleText" type="text" placeholder="Enter title" />
+      </Form.Group>
+      <Form.Group>
+        <Form.Label>Author</Form.Label>
+        <Form.Control name="authorText" type="text" placeholder="Enter author" />
+      </Form.Group>
+      <Form.Group>
+        <Form.Label>URL</Form.Label>
+        <Form.Control name="urlText" type="text" placeholder="Enter URL" />
+      </Form.Group>
+      <Button id="create-blog-button" className="createButton" type="submit">Create</Button>
+    </Form>
   );
 };
 

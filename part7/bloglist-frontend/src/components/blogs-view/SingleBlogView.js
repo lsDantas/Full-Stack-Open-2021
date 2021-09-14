@@ -13,7 +13,7 @@ const SingleBlogView = (props) => {
         (matchingBlogs.length === 0)
           ? <h2>No blog found.</h2>
           : <div>
-            <h1>{matchingBlogs[0].title}</h1>
+            <h2>{matchingBlogs[0].title}</h2>
             <BlogInfoCard key={matchingBlogs[0].id} blog={matchingBlogs[0]}/>
           </div>
       }

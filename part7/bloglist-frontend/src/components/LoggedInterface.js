@@ -1,9 +1,12 @@
 import React from 'react';
 import {
   BrowserRouter as Router,
-  Switch, Route, Link
+  Switch, Route
 } from 'react-router-dom';
 import { connect } from 'react-redux';
+
+// Bootstrap
+import { Button, Navbar, Container, Nav } from 'react-bootstrap'
 
 // Components
 import BlogsView from './blogs-view/BlogsView';
@@ -25,12 +28,22 @@ const LoggedInterface = (props) => {
     <Router>
       <div>
         <h1>Blogs App</h1>
-        <form id="navbar" onSubmit={handleLogout}>
-          <Link to="/blogs/">Blogs</Link>&nbsp;
-          <Link to="/users/">Users</Link>&nbsp;
-          {props.user.name} logged-in
-          <button type="submit">Logout</button>
-        </form>
+        <Navbar bg="primary" variant="dark">
+          <Container>
+            <Nav className="me-auto">
+              <Nav.Link href="/blogs/">Blogs</Nav.Link>
+              <Nav.Link href="/users/">Users</Nav.Link>
+            </Nav>
+            <Navbar.Toggle />
+            <Navbar.Collapse className="justify-content-end">
+              <Navbar.Text>
+                {props.user.name} logged-in
+              </Navbar.Text>
+              <Button onClick={handleLogout} type="submit">Logout</Button>
+            </Navbar.Collapse>
+          </Container>
+        </Navbar>
+
         <br></br>
         <Switch>
           <Route path="/blogs/:id">
