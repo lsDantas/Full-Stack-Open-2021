@@ -1,7 +1,12 @@
 import React from 'react';
+import {
+  BrowserRouter as Router,
+  Switch, Route
+} from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import BlogsView from './blogs-view/BlogsView';
+import UsersView from './users-view/UsersView';
 
 import { logout } from '../reducers/userReducer';
 
@@ -13,14 +18,23 @@ const LoggedInterface = (props) => {
   };
 
   return (
-    <div>
-      <h1>Blogs App</h1>
-      <form onSubmit={handleLogout}>
-        {props.user.name} logged-in
-        <button type="submit">Logout</button>
-      </form>
-      <BlogsView />
-    </div>
+    <Router>
+      <div>
+        <h1>Blogs App</h1>
+        <form onSubmit={handleLogout}>
+          {props.user.name} logged-in
+          <button type="submit">Logout</button>
+        </form>
+        <Switch>
+          <Route path="/users">
+            <UsersView />
+          </Route>
+          <Route path="/">
+            <BlogsView />
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 };
 
