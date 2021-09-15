@@ -89,8 +89,17 @@ let books = [
 ];
 
 const typeDefs = gql`
+  type Mutation {
+    addBook(
+      title: String!
+      author: String!
+      published: Int!
+      genres: [String!]!
+    ): Book
+  }
   type Author {
     name: String!
+    born: Int
     bookCount: Int!
   }
   type Book {
@@ -134,7 +143,25 @@ const resolvers = {
         bookCount: books.filter((book) => book.author === author.name).length
       }
     })
-  }
+  },
+  Mutation: {
+    addBook: (root, args) => {
+      // Update Books
+      const book = { ...args };
+      books = books.concat(book);
+      
+      // Add New Author
+      if (!authors.some((author) => author.name === args.author)) {
+        const author = { 
+          name: args.author,
+          bookCount: 1,
+        };
+        authors = authors.concat(author);
+      }
+
+      return book;
+    },
+  },
 };
 
 const server = new ApolloServer({
