@@ -1,15 +1,15 @@
 const { ApolloServer, gql } = require('apollo-server');
 const mongoose = require('mongoose');
-const Author = require('./models/author');
-const { count } = require('./models/book');
-const Book = require('./models/book');
 
-const MONGODB_URI = '';
+const config = require('./utils/config');
+
+const Author = require('./models/author');
+const Book = require('./models/book');
 
 // Connect to Database
 console.log('Connecting to database...');
 
-mongoose.connect(MONGODB_URI)
+mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB.')
   })
