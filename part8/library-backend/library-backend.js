@@ -1,10 +1,12 @@
 const { ApolloServer, gql } = require('apollo-server');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
 const config = require('./utils/config');
 
 const Author = require('./models/author');
 const Book = require('./models/book');
+const User = require('./models/user');
 
 // Connect to Database
 console.log('Connecting to database...');
@@ -32,6 +34,18 @@ const typeDefs = gql`
       setBornTo: Int!
     ): Author
   }
+  type Mutation {
+    createUser(
+      username: String!
+      favoriteGenre: String!
+    ): User
+  }
+  type Mutation {
+    login(
+      username: String!
+      password: String!
+    ): Token
+  }
   type Author {
     name: String!
     born: Int
@@ -43,11 +57,20 @@ const typeDefs = gql`
     published: Int!
     genres: [String!]!
   }
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+  type Token {
+    value: String!
+  }
   type Query {
     bookCount(name: String): Int!
     authorCount: Int!
     allBooks(name: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 `;
 
@@ -132,6 +155,30 @@ const resolvers = {
 
       return author;
     },
+    createUser: async (root, args) => {
+      const user = new User({ username: args.username });
+
+      // Save User
+      try {
+        user.save();
+      } catch (error) {
+        throw new UserInputError(error.message, { invalidArgs: args });
+      }
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username });
+
+      if( !user || args.password !== `secret` ) {
+        throw new UserInputError('Wrong credentails');
+      }
+
+      const userForToken = {
+        username: user.username,
+        id: user._id,
+      };
+
+      return { value: jwt.sign(userForToken, process.env.SECRET) }
+    }
   },
 };
 
