@@ -12,7 +12,7 @@ const schema = new mongoose.Schema({
     type: Number,
   },
   author: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: 'Author'
   },
   genres: [

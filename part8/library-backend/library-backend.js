@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server');
+const { ApolloServer, UserInputError, gql } = require('apollo-server');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
@@ -100,15 +100,15 @@ const resolvers = {
 
       return Book.find(filters);
     },
-    allAuthors: () => Person.find({})
+    allAuthors: () => Author.find({})
   },
   Mutation: {
     addBook: async (root, args) => {
       // Prepare Book
       const book = new Book({ 
         title: args.title,
-        published: args.published,
         author: args.author,
+        published: args.published,
         genres: args.genres,
       });
 
@@ -122,7 +122,9 @@ const resolvers = {
       }
 
       // Add Author if New
-      if (Book.count({ author: args.author }) === 0) {
+      const booksWithAuthor = await Book.count({ author: args.author });
+      console.log(booksWithAuthor);
+      if (booksWithAuthor === 1) {
         const author = new Author({
           name: args.author
         });
