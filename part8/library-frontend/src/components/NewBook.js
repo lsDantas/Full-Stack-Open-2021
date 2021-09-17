@@ -28,6 +28,7 @@ const NewBook = (props) => {
     setAuthor('');
     setGenres([]);
     setGenre('');
+    props.setUpdateToggle(!props.updateToggle);
   };
 
   const addGenre = () => {

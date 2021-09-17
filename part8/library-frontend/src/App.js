@@ -12,6 +12,7 @@ import Recommendations from './components/Recommendations';
 const App = () => {
   const [page, setPage] = useState('authors');
   const [error, setError] = useState(null);
+  const [updateToggle, setUpdateToggle] = useState(false);
 
   // Authentication and Session
   const [token, setToken] = useState(null);
@@ -52,14 +53,20 @@ const App = () => {
 
       <Books
         show={page === 'books'}
+        updateToggle={updateToggle}
+        setUpdateToggle={setUpdateToggle}
       />
 
       <NewBook
         show={page === 'add'}
+        updateToggle={updateToggle}
+        setUpdateToggle={setUpdateToggle}
       />
 
       <Recommendations
         show={page === 'recommendations'}
+        updateToggle={updateToggle}
+        setUpdateToggle={setUpdateToggle}
       />
 
     </div>

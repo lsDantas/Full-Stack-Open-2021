@@ -1,13 +1,19 @@
-import React from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { GET_RECOMMENDATIONS} from '../queries';
 
 const Recommendations = (props) => {
   const username = window.localStorage.getItem('books-app-username');
 
-  const result = useQuery(GET_RECOMMENDATIONS, { 
-    variables: { username }
+  const [getRecommendations, result] = useLazyQuery(GET_RECOMMENDATIONS, {
+    variables: { username },
+    fetchPolicy: 'network-only'
   });
+
+  useEffect(() => {
+    console.log('Inside the useEffect method');
+    getRecommendations();
+  }, [props.updateToggle, getRecommendations, username])
 
   if (!props.show) {
     return null;

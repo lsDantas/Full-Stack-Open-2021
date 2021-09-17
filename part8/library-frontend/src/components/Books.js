@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { ALL_BOOKS } from '../queries';
 
 const Books = (props) => {
-  const result = useQuery(ALL_BOOKS);
+  //const result = useQuery(ALL_BOOKS);
+  const [getBooks, result] = useLazyQuery(ALL_BOOKS);
+
+  useEffect(() => {
+    getBooks()
+  }, [props.updateToggle, getBooks]);
+  
   const [genre, setGenre] = useState('');
 
   if (!props.show) {
@@ -25,6 +31,11 @@ const Books = (props) => {
       ? book.genres.includes(genre)
       : true
   };
+
+  const genreUpdateHandler = ({ target }) => {
+    setGenre(target.value);
+    props.setUpdateToggle(!props.updateToggle);
+  }
 
   return (
     <div>
@@ -54,9 +65,9 @@ const Books = (props) => {
       </table>
       <br></br>
       {genres.map((genre) =>
-        <button key={`button-${genre}`} value={genre} onClick={({ target }) => setGenre(target.value)}>{genre}</button>
+        <button key={`button-${genre}`} value={genre} onClick={genreUpdateHandler}>{genre}</button>
       )}
-      <button onClick={({ target }) => setGenre('')}>all genres</button>
+      <button value="" onClick={genreUpdateHandler}>all genres</button>
     </div>
   );
 };
