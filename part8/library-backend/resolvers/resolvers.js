@@ -1,6 +1,7 @@
 const { UserInputError, gql } = require('apollo-server-express');
 const { PubSub } = require('graphql-subscriptions');
 const jwt = require('jsonwebtoken');
+const author = require('../models/author');
 
 // Models
 const Author = require('../models/author');
@@ -40,7 +41,28 @@ const resolvers = {
 
       return Book.find(filters);
     },
-    allAuthors: () => Author.find({}),
+    allAuthors: async (root, args) => {
+      const authors = await Author.find({});
+      const books = await Book.find({});
+
+      // Template for Book Count
+      const authorTemplateReducer = (template, author) => {
+        return { ...template, [author.name]: 0};
+      }
+      const authorsTemplate = authors.reduce(authorTemplateReducer, {})
+
+      // Determine Author Book Counts
+      const numBooksReducer = (authorsFreq, book) => {
+        return { ...authorsFreq, [book.author]: authorsFreq[book.author] + 1 }
+      };
+      const authorsFreq = books.reduce(numBooksReducer, authorsTemplate);
+
+      const queryResult = authors.map((author) => { 
+        return { name: author.name, born: author.born, bookCount: authorsFreq[author.name] } 
+      });
+      
+      return queryResult;
+    },
     me: async (root, args) => {
       const user = await User.findOne({ username: args.username });
 
