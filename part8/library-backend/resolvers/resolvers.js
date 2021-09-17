@@ -1,79 +1,10 @@
-const { ApolloServer, UserInputError, gql } = require('apollo-server');
-const mongoose = require('mongoose');
+const { ApolloServer, UserInputError, gql } = require('apollo-server-express');
 const jwt = require('jsonwebtoken');
 
-const config = require('./utils/config');
-
-const Author = require('./models/author');
-const Book = require('./models/book');
-const User = require('./models/user');
-
-// Connect to Database
-console.log('Connecting to database...');
-
-mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Connected to MongoDB.')
-  })
-  .catch((error) => {
-    console.log('Error connecting to MongoDB: ', error.message)
-  });
-
-const typeDefs = gql`
-  type Mutation {
-    addBook(
-      title: String!
-      author: String!
-      published: Int!
-      genres: [String!]!
-    ): Book
-  }
-  type Mutation {
-    editAuthor(
-      name: String!
-      setBornTo: Int!
-    ): Author
-  }
-  type Mutation {
-    createUser(
-      username: String!
-      favoriteGenre: String!
-    ): User
-  }
-  type Mutation {
-    login(
-      username: String!
-      password: String!
-    ): Token
-  }
-  type Author {
-    name: String!
-    born: Int
-    bookCount: Int!
-  }
-  type Book {
-    title: String!
-    author: String!
-    published: Int!
-    genres: [String!]!
-  }
-  type User {
-    username: String!
-    favoriteGenre: String!
-    id: ID!
-  }
-  type Token {
-    value: String!
-  }
-  type Query {
-    bookCount(name: String): Int!
-    authorCount: Int!
-    allBooks(name: String, genre: String): [Book!]!
-    allAuthors: [Author!]!
-    me(username: String!): User
-    getRecommendations(username: String!) : [Book!]!
-  }
-`;
+// Models
+const Author = require('../models/author');
+const Book = require('../models/book');
+const User = require('../models/user');
 
 const resolvers = {
   Query: {
@@ -84,11 +15,11 @@ const resolvers = {
       const filters = {
         ...(name && authorQuery)
       };
-      
+
       return Book.count(filters);
     },
     authorCount: () => Author.count({}),
-    allBooks: (root, args) => { 
+    allBooks: (root, args) => {
       const { name, genre } = args;
 
       const authorQuery = { author: name };
@@ -122,7 +53,7 @@ const resolvers = {
   Mutation: {
     addBook: async (root, args) => {
       // Prepare Book
-      const book = new Book({ 
+      const book = new Book({
         title: args.title,
         author: args.author,
         published: args.published,
@@ -187,7 +118,7 @@ const resolvers = {
     login: async (root, args) => {
       const user = await User.findOne({ username: args.username });
 
-      if( !user || args.password !== `secret` ) {
+      if (!user || args.password !== `secret`) {
         throw new UserInputError('Wrong credentails');
       }
 
@@ -201,11 +132,4 @@ const resolvers = {
   },
 };
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
-
-server.listen().then(({ url }) => {
-  console.log(`Server ready at ${url}`)
-});
+module.exports = resolvers;

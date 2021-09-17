@@ -2,15 +2,17 @@
   "name": "misc",
   "version": "1.0.0",
   "description": "",
-  "main": "library-backend.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "apollo-server": "^3.3.0",
+    "apollo-server-core": "^3.3.0",
+    "apollo-server-express": "^3.3.0",
     "dotenv": "^10.0.0",
+    "express": "^4.17.1",
     "graphql": "^15.5.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.9",

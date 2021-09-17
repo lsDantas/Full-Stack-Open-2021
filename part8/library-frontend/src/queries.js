@@ -73,5 +73,15 @@ export const GET_RECOMMENDATIONS = gql`
       published
     }
   }
+`
 
+export const BOOK_FEED = gql`
+  subscription BookFeed {
+    bookAdded {
+      title
+      author
+      published
+      genres
+    }
+  }
 `
