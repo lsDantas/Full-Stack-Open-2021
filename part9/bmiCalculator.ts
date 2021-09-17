@@ -1,8 +1,4 @@
-interface BMIValues{
-  value1: number;
-  value2: number;
-};
-
+// Validation Functions
 const validateNumber = (value: any): number => {
   if ( isNaN( Number(value) ) ) {
     throw new Error('Input is not a number.');
@@ -17,6 +13,7 @@ const assertStrictlyPositiveNumber = (value: number): void => {
   }
 }
 
+// BMI Calculator
 const calculateBmi = (heightVal: number, weightVal: number): string => {
 
   try {
@@ -63,6 +60,7 @@ const calculateBmi = (heightVal: number, weightVal: number): string => {
   }  
 };
 
+// Execution
 try {
   console.log('Valid:', calculateBmi(180, 74));
 } catch (error) {
