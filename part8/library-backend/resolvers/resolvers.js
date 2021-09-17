@@ -1,4 +1,5 @@
 const { ApolloServer, UserInputError, gql } = require('apollo-server-express');
+const { PubSub } = require('graphql-subscriptions');
 const jwt = require('jsonwebtoken');
 
 // Models
@@ -6,7 +7,14 @@ const Author = require('../models/author');
 const Book = require('../models/book');
 const User = require('../models/user');
 
+const pubsub = new PubSub();
+
 const resolvers = {
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+    }
+  },
   Query: {
     bookCount: (root, args) => {
       const { name } = args;
@@ -86,6 +94,9 @@ const resolvers = {
           });
         }
       }
+
+      // Notify Subscribers
+      pubsub.publish('BOOK_ADDED', { bookAdded: book });
 
       return book;
     },
