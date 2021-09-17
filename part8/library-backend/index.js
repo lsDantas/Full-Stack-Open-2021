@@ -1,18 +1,27 @@
+// Server
 const { ApolloServer, UserInputError, gql } = require('apollo-server-express');
 const { ApolloServerPluginDrainHttpServer } = require('apollo-server-core');
 const express = require('express');
 const http = require('http');
-const mongoose = require('mongoose');
 
+// GraphQL
+const { execute, subscribe } = require('graphql');
+const { Subscription, SubscriptionServer } = require('subscriptions-transport-ws');
+const { makeExecutableSchema } = require('@graphql-tools/schema');
+
+// Database and Environment
+const mongoose = require('mongoose');
+const config = require('./utils/config');
+
+// GraphQL Schema
 const typeDefs = require('./typeDefs/typeDefs');
 const resolvers = require('./resolvers/resolvers');
-
-const config = require('./utils/config');
+const schema = makeExecutableSchema({ typeDefs, resolvers });
 
 const app = express();
 const httpServer = http.createServer(app);
 
-// Database Connection
+// Establish Database Connection
 console.log('Connecting to database...');
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
@@ -24,10 +33,26 @@ mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology
 
 // Server Definition
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  schema,
+  plugins: [{
+    async serverWillStart() {
+      return {
+        async drainServer() {
+          subscriptionServer.close();
+        }
+      };
+    }
+  }]
 });
+
+const subscriptionServer = SubscriptionServer.create({
+  schema,
+  execute,
+  subscribe
+}, {
+  server: httpServer,
+  path: server.graphqlPath
+})
 
 server.start()
   .then(() =>{
