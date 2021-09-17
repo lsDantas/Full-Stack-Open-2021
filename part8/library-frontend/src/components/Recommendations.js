@@ -11,7 +11,6 @@ const Recommendations = (props) => {
   });
 
   useEffect(() => {
-    console.log('Inside the useEffect method');
     getRecommendations();
   }, [props.updateToggle, getRecommendations, username])
 

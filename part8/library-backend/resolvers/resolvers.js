@@ -1,4 +1,4 @@
-const { ApolloServer, UserInputError, gql } = require('apollo-server-express');
+const { UserInputError, gql } = require('apollo-server-express');
 const { PubSub } = require('graphql-subscriptions');
 const jwt = require('jsonwebtoken');
 

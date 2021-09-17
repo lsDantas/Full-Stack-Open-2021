@@ -1,11 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+// Apollo Client
+import {
+  ApolloClient, ApolloProvider, HttpLink, InMemoryCache,
+  split
+} from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { getMainDefinition } from '@apollo/client/utilities';
+import { WebSocketLink } from '@apollo/client/link/ws';
 
 import App from './App';
 
-import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client';
-
+// Authentication
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem('books-app-user-token');
   return {
@@ -16,11 +23,31 @@ const authLink = setContext((_, { headers }) => {
   }
 });
 
+// HTTP/WebSocket Configuration
 const httpLink = new HttpLink({ uri: 'http://localhost:4000' });
+const wsLink = new WebSocketLink({
+  uri: 'ws://localhost:4000/graphql',
+  options: {
+    reconnect: true,
+  }
+});
 
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    );
+  },
+  wsLink,
+  authLink.concat(httpLink),
+);
+
+// Client
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: authLink.concat(httpLink),
+  link: splitLink,
 });
 
 ReactDOM.render(

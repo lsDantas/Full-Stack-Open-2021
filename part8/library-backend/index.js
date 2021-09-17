@@ -62,6 +62,11 @@ server.start()
     });
 
     httpServer.listen(config.PORT, () => {
-      console.log(`🚀 Server ready at http://localhost:${config.PORT}${server.graphqlPath}`);
+      console.log(
+        `🚀 Query endpoint ready at http://localhost:${config.PORT}${server.graphqlPath}`
+      );
+      console.log(
+        `🚀 Subscription endpoint ready at ws://localhost:${config.PORT}${server.graphqlPath}/graphql`
+      );
     })
   });

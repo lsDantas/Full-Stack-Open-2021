@@ -75,7 +75,7 @@ export const GET_RECOMMENDATIONS = gql`
   }
 `
 
-export const BOOK_FEED = gql`
+export const BOOK_ADDED = gql`
   subscription BookFeed {
     bookAdded {
       title
