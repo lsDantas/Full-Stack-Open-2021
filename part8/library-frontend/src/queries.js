@@ -64,3 +64,14 @@ export const GET_ACTIVE_USER = gql`
     }
 }
 `
+
+export const GET_RECOMMENDATIONS = gql`
+  query getUserRecommendations ($username: String!) {
+    getRecommendations(username: $username) {
+      title
+      author
+      published
+    }
+  }
+
+`

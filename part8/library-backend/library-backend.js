@@ -71,6 +71,7 @@ const typeDefs = gql`
     allBooks(name: String, genre: String): [Book!]!
     allAuthors: [Author!]!
     me(username: String!): User
+    getRecommendations(username: String!) : [Book!]!
   }
 `;
 
@@ -105,6 +106,17 @@ const resolvers = {
       const user = await User.findOne({ username: args.username });
 
       return user;
+    },
+    getRecommendations: async (root, args) => {
+      if (args.username) {
+        const user = await User.findOne({ username: args.username });
+        const favoriteGenre = user.favoriteGenre;
+        const books = Book.find({ genres: { $all: favoriteGenre } });
+
+        return books
+      }
+
+      return null;
     }
   },
   Mutation: {

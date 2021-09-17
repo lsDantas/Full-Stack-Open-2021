@@ -1,30 +1,24 @@
 import React from 'react';
 import { useQuery } from '@apollo/client';
-import { ALL_BOOKS, GET_ACTIVE_USER} from '../queries';
+import { GET_RECOMMENDATIONS} from '../queries';
 
 const Recommendations = (props) => {
   const username = window.localStorage.getItem('books-app-username');
 
-  // Queries
-  const resultBooks = useQuery(ALL_BOOKS);
-  const resultUser = useQuery(GET_ACTIVE_USER, 
-    { variables: { username } }
-  );
+  const result = useQuery(GET_RECOMMENDATIONS, { 
+    variables: { username }
+  });
 
   if (!props.show) {
     return null;
   }
 
   // Wait for Queries to Load
-  if (resultBooks.loading || resultUser.loading) {
+  if (result.loading) {
     return <div>Loading...</div>;
   }
-
-  const books = resultBooks.data.allBooks;
-  const favoriteGenre = resultUser.data.me.favoriteGenre;
   
-  const matchingGenre = (book) => book.genres.includes(favoriteGenre);
-  const displayedBooks = books.filter(matchingGenre);
+  const recommendedBooks = result.data.getRecommendations;
 
   return (
     <div>
@@ -44,7 +38,7 @@ const Recommendations = (props) => {
               Published
             </th>
           </tr>
-          {displayedBooks.map((book) =>
+          {recommendedBooks.map((book) =>
             <tr key={`entry-${book.title}`}>
               <td>{book.title}</td>
               <td>{book.author}</td>
