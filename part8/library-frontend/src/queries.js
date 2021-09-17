@@ -55,3 +55,12 @@ export const EDIT_AUTHOR = gql`
     }
   }
 `;
+
+export const GET_ACTIVE_USER = gql`
+  query getActiveUser($username: String!) {
+    me(username: $username) {
+      username
+      favoriteGenre
+    }
+}
+`

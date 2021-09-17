@@ -44,12 +44,14 @@ const Authors = (props) => {
       <table>
         <tbody>
           <tr>
-            <th></th>
             <th>
-              born
+              Name
             </th>
             <th>
-              books
+              Born
+            </th>
+            <th>
+              Books
             </th>
           </tr>
           {authors.map(a =>

@@ -17,7 +17,8 @@ const LoginForm = ({ setError, setToken }) => {
     if (result.data) {
       const token = result.data.login.value;
       setToken(token);
-      localStorage.setItem('books-app-user-token', token)
+      localStorage.setItem('books-app-user-token', token);
+      localStorage.setItem('books-app-username', username);
     }
 
   }, [result.data]); //eslint-disable-line

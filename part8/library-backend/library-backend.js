@@ -70,7 +70,7 @@ const typeDefs = gql`
     authorCount: Int!
     allBooks(name: String, genre: String): [Book!]!
     allAuthors: [Author!]!
-    me: User
+    me(username: String!): User
   }
 `;
 
@@ -100,7 +100,12 @@ const resolvers = {
 
       return Book.find(filters);
     },
-    allAuthors: () => Author.find({})
+    allAuthors: () => Author.find({}),
+    me: async (root, args) => {
+      const user = await User.findOne({ username: args.username });
+
+      return user;
+    }
   },
   Mutation: {
     addBook: async (root, args) => {
@@ -144,8 +149,6 @@ const resolvers = {
     editAuthor: async (root, args) => {
       // Find Author
       const author = await Author.findOne({ name: args.name });
-      console.log('Args:', args);
-      console.log('Author: ', author);
       author.born = args.setBornTo;
 
       // Update Author
