@@ -26,7 +26,13 @@ const Authors = (props) => {
   const setBirthYear = async (event) => {
     event.preventDefault();
 
-    updateAuthor({ variables: { name, setBornTo: Number(born) } });
+    // In case user never interacted with Select
+    const defaultOption = authors[0].name;
+    const authorName = (authors && !name)
+      ? defaultOption
+      : name
+
+    updateAuthor({ variables: { name: authorName, setBornTo: Number(born) } });
     
     setName('');
     setBorn('');
@@ -34,7 +40,7 @@ const Authors = (props) => {
 
   return (
     <div>
-      <h2>authors</h2>
+      <h2>Authors</h2>
       <table>
         <tbody>
           <tr>
@@ -59,7 +65,13 @@ const Authors = (props) => {
       <h3>Set Birth Year</h3>
       <form onSubmit={setBirthYear}>
         <select value={name} onChange={({ target }) => setName(target.value)}>
-          {authors.map((author) => <option key={`option-${author.name}`}>{author.name}</option>)}
+          {authors.map((author) => 
+            <option 
+              key={`option-${author.name}`} 
+              value={author.name}>
+                {author.name}
+            </option>
+          )}
         </select>
         <div>
           Born:

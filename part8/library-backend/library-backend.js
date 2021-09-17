@@ -123,7 +123,7 @@ const resolvers = {
 
       // Add Author if New
       const booksWithAuthor = await Book.count({ author: args.author });
-      console.log(booksWithAuthor);
+
       if (booksWithAuthor === 1) {
         const author = new Author({
           name: args.author
@@ -144,6 +144,8 @@ const resolvers = {
     editAuthor: async (root, args) => {
       // Find Author
       const author = await Author.findOne({ name: args.name });
+      console.log('Args:', args);
+      console.log('Author: ', author);
       author.born = args.setBornTo;
 
       // Update Author
