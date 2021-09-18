@@ -1,6 +1,6 @@
-import { parseNumbers, assertPositivity } from './argumentParse';
+import { assertPositivity } from './argumentParse';
 
-type Rating = 1 | 2 | 3;
+export type Rating = 1 | 2 | 3;
 
 interface ExerciseCategory {
   rating: Rating,
@@ -8,17 +8,17 @@ interface ExerciseCategory {
   description: string,
 }
 
-interface ExerciseProfile {
+export interface ExerciseProfile {
   periodLength: number,
   trainingDays: number,
   success: boolean,
   rating: Rating,
   ratingDescription: string,
-  target: Rating,
+  target: number,
   average: number,
 }
 
-const parseRating = (entry: unknown): Rating => {
+export const parseRating = (entry: unknown): Rating => {
   const rating = Number(entry);
 
   if( isNaN(rating) ) {
@@ -32,7 +32,7 @@ const parseRating = (entry: unknown): Rating => {
   return rating;
 };
 
-const calculateExercise = (exerciseHours: Array<number>, target: Rating): ExerciseProfile => {
+const calculateExercise = (exerciseHours: Array<number>, target: number): ExerciseProfile => {
   try {
     assertPositivity(exerciseHours);
 
@@ -45,12 +45,11 @@ const calculateExercise = (exerciseHours: Array<number>, target: Rating): Exerci
     const average: number = exerciseHours.reduce(totalHoursReducer) / periodLength;
 
     // Exercise Rating Definitions
-    const idealHours = 0.5;
     const tolerance= 0.2;
     const ratingDescriptions: Array<ExerciseCategory> = [
       { rating: 1, minThreshold: 0, description: 'Not exercising enough.' },
-      { rating: 2, minThreshold: idealHours - tolerance, description: 'Not bad, but could be better.' },
-      { rating: 3, minThreshold: idealHours + tolerance, description: 'Exercising really well!' },
+      { rating: 2, minThreshold: target - tolerance, description: 'Not bad, but could be better.' },
+      { rating: 3, minThreshold: target + tolerance, description: 'Exercising really well!' },
     ];
 
     // Assign Rating
@@ -62,7 +61,7 @@ const calculateExercise = (exerciseHours: Array<number>, target: Rating): Exerci
 
     const rating: Rating = assignedCategory.rating;
     const ratingDescription: string = assignedCategory.description;
-    const success: boolean = (rating >= target) ? true : false;
+    const success: boolean = (average >= target) ? true : false;
 
     // Build Profile
     const profile: ExerciseProfile = {
@@ -81,19 +80,4 @@ const calculateExercise = (exerciseHours: Array<number>, target: Rating): Exerci
   }
 };
 
-// Execution
-try {
-  // Input Parsing and Validation
-  const exerciseInputs: Array<string> = process.argv.slice(2);
-  console.log('Exercise Inputs: ', exerciseInputs);
-
-  const target: Rating = parseRating(exerciseInputs.at(0));
-  const exerciseHours: Array<number> = parseNumbers(exerciseInputs.slice(1));
-  console.log('Target: ', target);
-  console.log('Exercise Hours: ', exerciseHours);
-
-  // Generate Exercise Profile
-  console.log(calculateExercise(exerciseHours, target));
-} catch (error) {
-  console.log('Invalid inputs for weight and height.');
-}
+export { calculateExercise };
