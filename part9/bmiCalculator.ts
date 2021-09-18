@@ -1,27 +1,10 @@
-// Validation Functions
-const validateNumber = (value: any): number => {
-  if ( isNaN( Number(value) ) ) {
-    throw new Error('Input is not a number.');
-  }
+import { parseNumbers, assertStrictPositivity } from './argumentParse';
 
-  return Number(value);
-}
-
-const assertStrictlyPositiveNumber = (value: number): void => {
-  if(value <= 0 ){ 
-    throw new Error('Input is non-positive.');
-  }
-}
-
-// BMI Calculator
-const calculateBmi = (heightVal: number, weightVal: number): string => {
+const calculateBmi = (height: number, weight: number): string => {
 
   try {
-    // Input Validation
-    const height: number = validateNumber(heightVal);
-    const weight: number = validateNumber(weightVal);
-    assertStrictlyPositiveNumber(height);
-    assertStrictlyPositiveNumber(weight);
+    // Check for Positive Values
+    assertStrictPositivity([height, weight]);
 
     // Calculate BMI  
     const bmi: number = weight / (height / 100)**2;
@@ -62,8 +45,8 @@ const calculateBmi = (heightVal: number, weightVal: number): string => {
 
 // Execution
 try {
-  console.log('BMI:', calculateBmi(180, 74));
+  const [height, weight]: number[] = parseNumbers(process.argv.slice(2));
+  console.log(calculateBmi(height, weight));
 } catch (error) {
   console.log('Invalid inputs for weight and height.');
 }
-
