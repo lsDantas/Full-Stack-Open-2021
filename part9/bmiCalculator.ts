@@ -1,4 +1,4 @@
-import { parseNumbers, assertStrictPositivity } from './argumentParse';
+import { assertStrictPositivity } from './argumentParse';
 
 const calculateBmi = (height: number, weight: number): string => {
 
@@ -29,7 +29,7 @@ const calculateBmi = (height: number, weight: number): string => {
       },
     ]
     let description: string = '';
-    for (const category of bmiCategories) {
+    for (let category of bmiCategories) {
       if (bmi > category.index) {
         description = category.description;
       } else {
@@ -37,7 +37,8 @@ const calculateBmi = (height: number, weight: number): string => {
       }
     }
 
-    if(description='') {
+    // Check that a Category was Selected
+    if(description === '') {
       throw new Error('Unable to find category.')
     }
 
@@ -47,10 +48,4 @@ const calculateBmi = (height: number, weight: number): string => {
   }  
 };
 
-// Execution
-try {
-  const [height, weight]: number[] = parseNumbers(process.argv.slice(2));
-  console.log(calculateBmi(height, weight));
-} catch (error) {
-  console.log('Invalid inputs for weight and height.');
-}
+export { calculateBmi };

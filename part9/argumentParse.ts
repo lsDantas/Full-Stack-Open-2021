@@ -1,4 +1,4 @@
-export const parseNumbers = (entries: Array<string>): Array<number> => {
+export const parseNumbers = (entries: Array<unknown>): Array<number> => {
   const numbers: Array<number> = entries.map((entry: string)  => {
     const number = Number(entry);
     if ( isNaN(number) ) {
