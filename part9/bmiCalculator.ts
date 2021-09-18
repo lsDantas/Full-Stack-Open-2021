@@ -62,7 +62,7 @@ const calculateBmi = (heightVal: number, weightVal: number): string => {
 
 // Execution
 try {
-  console.log('Valid:', calculateBmi(180, 74));
+  console.log('BMI:', calculateBmi(180, 74));
 } catch (error) {
   console.log('Invalid inputs for weight and height.');
 }
