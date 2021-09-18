@@ -15,7 +15,7 @@ export const assertPositivity = (values: Array<number>): void => {
     if (value < 0) {
       throw new Error('Input is negative.');
     }
-  })
+  });
 };
 
 export const assertStrictPositivity = (values: Array<number>): void => {
@@ -23,5 +23,5 @@ export const assertStrictPositivity = (values: Array<number>): void => {
     if (value <= 0) {
       throw new Error('Input is non-positive.');
     }
-  })
+  });
 };

@@ -1,5 +1,10 @@
 import { assertStrictPositivity } from './argumentParse';
 
+interface BMICategory {
+  index: number;
+  description: string;
+}
+
 const calculateBmi = (height: number, weight: number): string => {
 
   try {
@@ -10,7 +15,7 @@ const calculateBmi = (height: number, weight: number): string => {
     const bmi: number = weight / (height / 100)**2;
 
     // Assign Category
-    const bmiCategories: Array<any> = [
+    const bmiCategories: Array<BMICategory> = [
       {
         index: 0,
         description: 'Underweight (unhealthy weight)'
@@ -27,9 +32,9 @@ const calculateBmi = (height: number, weight: number): string => {
         index: 30,
         description: 'Obese (unhealthy weight)'
       },
-    ]
-    let description: string = '';
-    for (let category of bmiCategories) {
+    ];
+    let description = '';
+    for (const category of bmiCategories) {
       if (bmi > category.index) {
         description = category.description;
       } else {
@@ -39,7 +44,7 @@ const calculateBmi = (height: number, weight: number): string => {
 
     // Check that a Category was Selected
     if(description === '') {
-      throw new Error('Unable to find category.')
+      throw new Error('Unable to find category.');
     }
 
     return description;

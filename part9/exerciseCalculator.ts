@@ -6,7 +6,7 @@ interface ExerciseCategory {
   rating: Rating,
   minThreshold: number,
   description: string,
-};
+}
 
 interface ExerciseProfile {
   periodLength: number,
@@ -16,7 +16,7 @@ interface ExerciseProfile {
   ratingDescription: string,
   target: Rating,
   average: number,
-};
+}
 
 const parseRating = (entry: unknown): Rating => {
   const rating = Number(entry);
@@ -30,11 +30,11 @@ const parseRating = (entry: unknown): Rating => {
   }
 
   return rating;
-}
+};
 
 const calculateExercise = (exerciseHours: Array<number>, target: Rating): ExerciseProfile => {
   try {
-    assertPositivity(exerciseHours)
+    assertPositivity(exerciseHours);
 
     const isTrainingDay = (dailyHours: number): boolean => dailyHours !== 0;
     const totalHoursReducer = (sum: number, dailyHours: number): number => sum + dailyHours;
@@ -45,8 +45,8 @@ const calculateExercise = (exerciseHours: Array<number>, target: Rating): Exerci
     const average: number = exerciseHours.reduce(totalHoursReducer) / periodLength;
 
     // Exercise Rating Definitions
-    const idealHours: number = 0.5;
-    const tolerance: number = 0.2;
+    const idealHours = 0.5;
+    const tolerance= 0.2;
     const ratingDescriptions: Array<ExerciseCategory> = [
       { rating: 1, minThreshold: 0, description: 'Not exercising enough.' },
       { rating: 2, minThreshold: idealHours - tolerance, description: 'Not bad, but could be better.' },
@@ -77,7 +77,7 @@ const calculateExercise = (exerciseHours: Array<number>, target: Rating): Exerci
 
     return profile;
   } catch(error) {
-    throw new Error('Invalid input.')
+    throw new Error('Invalid input.');
   }
 };
 
