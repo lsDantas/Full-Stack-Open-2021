@@ -28,13 +28,17 @@ const calculateBmi = (height: number, weight: number): string => {
         description: 'Obese (unhealthy weight)'
       },
     ]
-    let description: string;
+    let description: string = '';
     for (const category of bmiCategories) {
       if (bmi > category.index) {
         description = category.description;
       } else {
         break;
       }
+    }
+
+    if(description='') {
+      throw new Error('Unable to find category.')
     }
 
     return description;

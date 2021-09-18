@@ -5,7 +5,7 @@ type Rating = 1 | 2 | 3;
 interface ExerciseCategory {
   rating: Rating,
   minThreshold: number,
-  description: String,
+  description: string,
 };
 
 interface ExerciseProfile {
@@ -13,12 +13,12 @@ interface ExerciseProfile {
   trainingDays: number,
   success: boolean,
   rating: Rating,
-  ratingDescription: String,
+  ratingDescription: string,
   target: Rating,
   average: number,
 };
 
-const parseRating = (entry: String): Rating => {
+const parseRating = (entry: unknown): Rating => {
   const rating = Number(entry);
 
   if( isNaN(rating) ) {
@@ -61,7 +61,7 @@ const calculateExercise = (exerciseHours: Array<number>, target: Rating): Exerci
     const assignedCategory: ExerciseCategory = ratingDescriptions.reduce(assignCategoryReducer);
 
     const rating: Rating = assignedCategory.rating;
-    const ratingDescription: String = assignedCategory.description;
+    const ratingDescription: string = assignedCategory.description;
     const success: boolean = (rating >= target) ? true : false;
 
     // Build Profile

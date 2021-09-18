@@ -1,5 +1,5 @@
-export const parseNumbers = (entries: Array<String>): Array<number> => {
-  const numbers: Array<number> = entries.map((entry: String)  => {
+export const parseNumbers = (entries: Array<string>): Array<number> => {
+  const numbers: Array<number> = entries.map((entry: string)  => {
     const number = Number(entry);
     if ( isNaN(number) ) {
       throw new Error('Input is not a number');
