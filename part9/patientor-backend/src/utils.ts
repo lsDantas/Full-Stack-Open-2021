@@ -59,4 +59,9 @@ const toNewPatientEntry = ({ name, dateOfBirth, ssn, gender, occupation }: Patie
   return newPatient;
 };
 
-export default toNewPatientEntry;
+const toID = (id : unknown): string => {
+  const parsedID: string = parseText(id);
+  return parsedID;
+};
+
+export default { toNewPatientEntry, toID };
