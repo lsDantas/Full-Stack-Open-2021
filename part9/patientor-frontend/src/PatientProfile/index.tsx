@@ -5,7 +5,7 @@ import axios from "axios";
 
 import { apiBaseUrl } from "../constants";
 
-import { Patient } from "../types";
+import { Patient, Entry } from "../types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -62,6 +62,20 @@ const PatientProfile = () => {
       SSN: {patient.ssn}
       <br></br>
       Occupation: {patient.occupation}
+      <br></br>
+      <h2>Entries</h2>
+      {
+        patient.entries.map((entry: Entry) => 
+          <div key={`entry-${entry.id}`}>
+            {entry.date} <i>{entry.description}</i>
+            <ul>
+              {entry.diagnosisCodes?.map((code: string) => 
+                <li key={`diagnosis-code-${entry.id}-${code}`}>{code}</li>
+              )}
+            </ul>
+          </div>
+        )
+      }
     </div>
   );
 };
