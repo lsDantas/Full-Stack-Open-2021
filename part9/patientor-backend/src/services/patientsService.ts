@@ -1,6 +1,6 @@
 import { v1 as uuid } from 'uuid';
 
-import patientsData from '../../data/patients.json';
+import patientsData from '../../data/patients';
 
 import { Patient, PublicPatient, NewPatientEntry, Entry } from '../types';
 
@@ -21,7 +21,6 @@ const addNewPatient = (entry : NewPatientEntry): Patient => {
     entries: [] as Entry[],
     ...entry,
   };
-  // @ts-ignore
   patientsData.push(newPatient);
   return newPatient;
 };
