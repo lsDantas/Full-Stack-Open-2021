@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
-import { Patient } from "../types";
+import axios from "axios";
 
-import { useStateValue } from "../state";
+import { apiBaseUrl } from "../constants";
+
+import { Patient } from "../types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -18,28 +20,42 @@ const parseID = (text: unknown): string => {
 };
 
 const PatientProfile = () => {
-  const [{ patients }, dispatch] = useStateValue();
-  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
   const [error, setError] = React.useState<string | undefined>();
 
-  const openModal = (): void => setModalOpen(true);
-
-  const closeModal = (): void => {
-    setModalOpen(false);
-    setError(undefined);
-  };
-
+  // Patient Fetch
+  const [patient, setPatient] = useState<Patient | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
+  
+  // Selected ID
   const { id } = useParams<{ id: string }>();
   const parsedID: string = parseID(id);
 
-  const matchingIDs = (entry: Patient): boolean => entry.id === parsedID;
-  const patient: Patient | undefined = Object.values(patients).find(matchingIDs);
+  useEffect(() => {
+    void axios
+      .get<Patient>(`${apiBaseUrl}/patients/${parsedID}`)
+      .then((response) => {
+        if (response?.status === 200) {
+          setPatient(response.data);
+        } else {
+          console.error('Unable to fetch patient information.');
+          setError('Unable to fetch patient information.');
+        }
 
+        setLoading(false);
+      });
+    }, []);
+
+  // While patient fetch incomplete.
+  if (loading) {
+    return (<h3>Loading...</h3>);
+  }
+
+  // No Patient Found
   if(!patient) {
     return (<h3>Patient not found.</h3>);
   }
-  console.log(patient);
 
+  // Patient Found
   return(
     <div>
       <h3>{patient.name} {(patient.gender === "male") ? "♂" : "♀"}</h3>
