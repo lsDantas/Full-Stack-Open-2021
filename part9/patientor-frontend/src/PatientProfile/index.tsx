@@ -5,7 +5,7 @@ import axios from "axios";
 
 import { apiBaseUrl } from "../constants";
 
-import { Patient, Entry } from "../types";
+import { Patient, Entry, Diagnosis } from "../types";
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -24,12 +24,17 @@ const PatientProfile = () => {
 
   // Patient Fetch
   const [patient, setPatient] = useState<Patient | undefined>(undefined);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [patientLoading, setPatientLoading] = useState<boolean>(true);
+
+  // Diagnoses Fetch
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[] | undefined>(undefined);
+  const [diagnosesLoading, setDiagnosesLoading] = useState<boolean>(true);
   
   // Selected ID
   const { id } = useParams<{ id: string }>();
   const parsedID: string = parseID(id);
 
+  // Fetch Patient Profile
   useEffect(() => {
     void axios
       .get<Patient>(`${apiBaseUrl}/patients/${parsedID}`)
@@ -41,12 +46,28 @@ const PatientProfile = () => {
           setError('Unable to fetch patient information.');
         }
 
-        setLoading(false);
+        setPatientLoading(false);
       });
     }, []);
 
+  // Fetch Diagnoses Date
+  useEffect(() => {
+    void axios
+      .get<Diagnosis[]>(`${apiBaseUrl}/diagnoses/`)
+      .then((response) => {
+        if (response?.status === 200) {
+          setDiagnoses(response.data);
+        } else {
+          console.error('Unable to fetch diagnoses information.');
+          setError('Unable to fetch diagnoses information.');
+        }
+
+        setDiagnosesLoading(false);
+      });
+  }, []);
+
   // While patient fetch incomplete.
-  if (loading) {
+  if (patientLoading || diagnosesLoading) {
     return (<h3>Loading...</h3>);
   }
 
@@ -54,6 +75,17 @@ const PatientProfile = () => {
   if(!patient) {
     return (<h3>Patient not found.</h3>);
   }
+
+  const getCodeDescription = (code: string): string => {
+    const matchingCodes = (diagnosis: Diagnosis): boolean => diagnosis.code === code;
+    const matchingDiagnosis: Diagnosis | undefined = diagnoses?.find(matchingCodes);
+    
+    if (matchingDiagnosis) {
+      return matchingDiagnosis.name;
+    }
+
+    return "No description available";
+  };
 
   // Patient Found
   return(
@@ -70,7 +102,9 @@ const PatientProfile = () => {
             {entry.date} <i>{entry.description}</i>
             <ul>
               {entry.diagnosisCodes?.map((code: string) => 
-                <li key={`diagnosis-code-${entry.id}-${code}`}>{code}</li>
+                <li key={`diagnosis-code-${entry.id}-${code}`}>
+                  {code} {getCodeDescription(code)}
+                </li>
               )}
             </ul>
           </div>
