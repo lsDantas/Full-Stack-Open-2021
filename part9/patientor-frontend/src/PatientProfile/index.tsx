@@ -2,10 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import axios from "axios";
+import { Card, Icon, SemanticCOLORS } from "semantic-ui-react";
 
 import { apiBaseUrl } from "../constants";
 
-import { Patient, Entry, Diagnosis } from "../types";
+import { Patient, Diagnosis, Entry, HealthCheckEntry, HealthCheckRating, OccupationalHealthcareEntry, HospitalEntry} from "../types";
+
+function assertNever(value: never): never {
+  throw new Error("Unhandled entry union member.");
+}
 
 const isString = (text: unknown): text is string => {
   return typeof text === 'string' || text instanceof String;
@@ -95,23 +100,97 @@ const PatientProfile = () => {
       <br></br>
       Occupation: {patient.occupation}
       <br></br>
-      <h2>Entries</h2>
-      {
-        patient.entries.map((entry: Entry) => 
-          <div key={`entry-${entry.id}`}>
-            {entry.date} <i>{entry.description}</i>
-            <ul>
-              {entry.diagnosisCodes?.map((code: string) => 
-                <li key={`diagnosis-code-${entry.id}-${code}`}>
-                  {code} {getCodeDescription(code)}
-                </li>
-              )}
-            </ul>
-          </div>
-        )
-      }
+      <h3>Entries</h3>
+      <Card.Group>
+        {
+          patient.entries.map((entry: Entry) => 
+          <Card key={`entry-details-${entry.id}`} fluid>
+            <Card.Content>
+              <Card.Header content={entry.date} />
+              <Card.Meta>
+                {entry.description}
+              </Card.Meta>
+              <Card.Description>
+                  <EntryDetails entry={entry} />
+              </Card.Description>
+            </Card.Content>
+          </Card>
+          )
+        }
+      </Card.Group>
     </div>
   );
 };
 
+const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
+  switch(entry.type) {
+    case "Hospital":
+      return <HospitalDetails entry={entry}/>;
+    case "OccupationalHealthcare":
+      return <OccupationalHealthcareDetails entry={entry}/>;
+    case "HealthCheck":
+      return <HealthCheckDetails entry={entry}/>;
+    default:
+      return assertNever(entry);
+  }
+};
+
+const HospitalDetails: React.FC<{ entry: HospitalEntry }> = ({ entry }) => {
+  return (
+    <>Discharged on: {entry.discharge.date}</>
+  );
+};
+
+const OccupationalHealthcareDetails: React.FC<{ entry: OccupationalHealthcareEntry }> = ({ entry }) => {
+  return (
+    <>Employer: {entry.employerName}</>
+  );
+};
+
+const HealthCheckDetails: React.FC<{ entry: HealthCheckEntry }> = ({ entry }) => {
+  let colorTest: SemanticCOLORS;
+  let useColor = false;
+  
+  switch (entry.healthCheckRating) {
+    case 0:
+      colorTest = "green";
+      useColor = true;
+      break;
+    case 1:
+      colorTest = "yellow";
+      useColor = true;
+      break;
+    case 2: 
+      colorTest = "orange";
+      useColor = true;
+      break;
+    case 3: 
+      colorTest = "red";
+      useColor=true;
+      break;
+    default:
+      colorTest = "grey";
+      useColor = false;
+      break;
+  }
+
+  const colorMap = { 
+    0: "green",
+    1: "yellow", 
+    2: "orange",
+    3: "red", 
+  };
+  
+  const color: string | undefined = (colorMap[entry.healthCheckRating])
+    ? colorMap[entry.healthCheckRating]
+    : undefined;
+
+  return (
+    <>{useColor && <Icon color={colorTest} name="heart" />}</>
+  );
+};
+
+
+
 export default PatientProfile;
+
