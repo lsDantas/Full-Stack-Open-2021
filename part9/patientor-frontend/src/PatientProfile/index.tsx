@@ -2,11 +2,20 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from 'react-router-dom';
 import axios from "axios";
-import { Card, Icon, SemanticCOLORS } from "semantic-ui-react";
 
+// UI Elements
+import { Card, Icon, SemanticCOLORS, Button, List } from "semantic-ui-react";
+
+// Network Communications
 import { apiBaseUrl } from "../constants";
 
-import { Patient, Diagnosis, Entry, HealthCheckEntry, HealthCheckRating, OccupationalHealthcareEntry, HospitalEntry} from "../types";
+// State Management
+import { updatePatient } from "../state";
+import { useStateValue } from "../state";
+
+// Types
+import { Patient, Diagnosis, Entry, HealthCheckEntry, HealthCheckRating, OccupationalHealthcareEntry, HospitalEntry, EntryWithoutId} from "../types";
+import AddEntryModal from "./AddEntryModal";
 
 function assertNever(value: never): never {
   throw new Error("Unhandled entry union member.");
@@ -27,14 +36,26 @@ const parseID = (text: unknown): string => {
 const PatientProfile = () => {
   const [error, setError] = React.useState<string | undefined>();
 
-  // Patient Fetch
+  // General Patients - State
+  const [{ patients }, dispatch] = useStateValue();
+
+  // Specific Patient - State
   const [patient, setPatient] = useState<Patient | undefined>(undefined);
   const [patientLoading, setPatientLoading] = useState<boolean>(true);
 
   // Diagnoses Fetch
   const [diagnoses, setDiagnoses] = useState<Diagnosis[] | undefined>(undefined);
   const [diagnosesLoading, setDiagnosesLoading] = useState<boolean>(true);
-  
+
+  // New Medical Entry Modal
+  const [modalOpen, setModalOpen] = React.useState<boolean>(false);
+  const openModal = (): void => setModalOpen(true);
+
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(undefined);
+  };
+
   // Selected ID
   const { id } = useParams<{ id: string }>();
   const parsedID: string = parseID(id);
@@ -81,6 +102,27 @@ const PatientProfile = () => {
     return (<h3>Patient not found.</h3>);
   }
 
+  // Add New Patient Entry
+  const submitNewEntry = async (values: EntryWithoutId) => {
+    console.log('Values: ', values);
+    try {
+      console.log(`${apiBaseUrl}/patients/${patient.id}/entries`);
+      const { data: updatedPatient } = await axios.post<Patient>(`${apiBaseUrl}/patients/${patient.id}/entries`, values);
+
+      dispatch(updatePatient(updatedPatient));
+      setPatient(updatedPatient);
+      closeModal();
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      console.error(e.response?.data || 'Unknown Error');
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      setError(e.response?.data?.error || 'Unknown error');
+    }
+  };
+
+  // Fetch Entry Details
   const getCodeDescription = (code: string): string => {
     const matchingCodes = (diagnosis: Diagnosis): boolean => diagnosis.code === code;
     const matchingDiagnosis: Diagnosis | undefined = diagnoses?.find(matchingCodes);
@@ -92,7 +134,6 @@ const PatientProfile = () => {
     return "No description available";
   };
 
-  // Patient Found
   return(
     <div>
       <h3>{patient.name} {(patient.gender === "male") ? "♂" : "♀"}</h3>
@@ -108,9 +149,24 @@ const PatientProfile = () => {
             <Card.Content>
               <Card.Header content={entry.date} />
               <Card.Meta>
-                {entry.description}
+                {entry.description} 
               </Card.Meta>
               <Card.Description>
+                  {(entry.diagnosisCodes && entry.diagnosisCodes.length !== 0 &&
+                  <>
+                    <List>
+                      <List.Item>
+                        <List.Header>Diagnoses:</List.Header>
+                      </List.Item>
+                      {entry.diagnosisCodes?.map((code) => 
+                        <List.Item key={`entry-diagnoses-${entry.id}-${code}`}>
+                          {code} - {getCodeDescription(code)}
+                        </List.Item> 
+                      )}
+                    </List>
+                  </>
+                  )}
+                  <br></br>
                   <EntryDetails entry={entry} />
               </Card.Description>
             </Card.Content>
@@ -118,6 +174,14 @@ const PatientProfile = () => {
           )
         }
       </Card.Group>
+      <br></br>
+      <AddEntryModal 
+        modalOpen={modalOpen}
+        onSubmit={submitNewEntry}
+        error={error}
+        onClose={closeModal}
+      />
+      <Button onClick={() => openModal()}>Add New Entry</Button>
     </div>
   );
 };
@@ -137,13 +201,13 @@ const EntryDetails: React.FC<{ entry: Entry }> = ({ entry }) => {
 
 const HospitalDetails: React.FC<{ entry: HospitalEntry }> = ({ entry }) => {
   return (
-    <>Discharged on: {entry.discharge.date}</>
+    <><b>Discharged on:</b> {entry.discharge.date}</>
   );
 };
 
 const OccupationalHealthcareDetails: React.FC<{ entry: OccupationalHealthcareEntry }> = ({ entry }) => {
   return (
-    <>Employer: {entry.employerName}</>
+    <><b>Employer:</b> {entry.employerName}</>
   );
 };
 

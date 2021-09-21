@@ -77,12 +77,12 @@ const parseDiagnoses = (diagnosesCodes: unknown) : Array<Diagnosis['code']> => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const isHealthCheckRating = (param: any): param is HealthCheckRating => {
   const possibleValues = [0,1,2,3];
-  const valueMatchesParam = (value: number) => value === param;
+  const valueMatchesParam = (value: number) => value === Number(param);
   return possibleValues.some(valueMatchesParam);
 };
 
 const parseHealthCheckRating = (healthCheckRating: unknown): HealthCheckRating => {
-  if (!healthCheckRating || !isHealthCheckRating(healthCheckRating)) {
+  if ( healthCheckRating == null || !isHealthCheckRating(healthCheckRating)) {
     throw new Error('Invalid health check rating.');
   }
 

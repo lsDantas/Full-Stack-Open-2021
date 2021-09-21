@@ -26,7 +26,6 @@ router.post('/:id/entries', (req: Request, res: Response) => {
   try {
     const id: string = utils.toID(req.params.id);
     const newEntry: EntryWithoutId = utils.toEntry(req.body);
-
     const updatedPatient = patientsService.addPatientEntries(id, newEntry);
     res.send(updatedPatient);
   } catch (error) {
