@@ -4,7 +4,7 @@
 
 The program covers major web development technologies, including [React](https://reactjs.org/), [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/), [MongoDB](https://www.mongodb.com/), and [Redux](https://redux.js.org/). Other lateral topics in contemporary web development as also considered such as [GraphQL](https://graphql.org/), [TypeScript](https://www.typescriptlang.org/), [React Native](https://reactnative.dev/), CI/CD with [GitHub Actions](https://github.com/features/actions), and [Docker](https://www.docker.com/) containers.
 
-![](./misc/full-stack-testing.mp4)
+![Video of end-to-end testing of full stack app.](./misc/full-stack-testing.gif)
 
 ## Program
 
