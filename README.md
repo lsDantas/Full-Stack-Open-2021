@@ -2,7 +2,7 @@
 
 [Full Stack Open 2021](https://fullstackopen.com/en/) is a massive open online course offered by the University of Helsinki on modern full stack web development. The following repository contains my submissions for the exercises of the course. 
 
-The program covers major web development technologies, including [React](https://reactjs.org/), [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/), [MongoDB](https://www.mongodb.com/), and [Redux](https://redux.js.org/). Other lateral topics in contemporary web development as also considered such as [GraphQL](https://graphql.org/), [TypeScript](https://www.typescriptlang.org/), [React Native](https://reactnative.dev/), CI/CD with [GitHub Actions](https://github.com/features/actions), and [Docker](https://www.docker.com/) containers.
+The program covers major web development technologies, including [React](https://reactjs.org/), [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/), [MongoDB](https://www.mongodb.com/), and [Redux](https://redux.js.org/). Other lateral topics in contemporary web development are also considered such as [GraphQL](https://graphql.org/), [TypeScript](https://www.typescriptlang.org/), [React Native](https://reactnative.dev/), CI/CD with [GitHub Actions](https://github.com/features/actions), and [Docker](https://www.docker.com/) containers.
 
 ![Video of end-to-end testing of full stack app.](./misc/full-stack-testing.gif)
 
